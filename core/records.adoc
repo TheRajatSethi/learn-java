@@ -1,0 +1,120 @@
+:toc: left
+
+= Records
+
+Records are Java’s answer for dataclasses used to represent data. Mostly to be used with data oriented programming in java. They are carriers of immutable data and can be thought of as nominal tuples.
+
+== Overview
+
+. They have a small syntax such as record `Point(int x, int y){}` and they provide the following by default `toString` `hashCode` `equals` `getter` `constructor`
+. Members are final (non-mutable)
+. Cannot have additional members other than in `()`. Allowed only if static.
+. A record class is implicitly `final`, so you cannot explicitly extend a record class. cannot be abstract
+. Can implement interfaces.
+. Can extend classes
+. Can have annotation on fields.
+. Have Compact Constructors.
+. Serialization and Deserialization cannot be customized
+. Other than that behave same as any other class.
+
+
+[,java]
+----
+public record PurchaseOrder(LocalDate date, String description) implements Serializable {
+    int id; // instance field not allowed
+    static int id; // static field is allowed
+}
+----
+
+== Disassemble a generated class for Record
+
+Let us say we have a record class for `PurchaseOrder` and we complied it to `PurchaseOrder.class`
+
+[,java]
+----
+include::PurchaseOrder.java[]
+----
+
+Let us disassemble it using `javap` command.
+
+----
+javap PurchaseOrder.class
+----
+
+Gives the following output
+
+[,java,linenums]
+----
+public final class record.PurchaseOrder extends java.lang.Record implements java.io.Serializable {
+  public record.PurchaseOrder(java.time.LocalDate, java.lang.String);
+  public final java.lang.String toString();
+  public final int hashCode();
+  public final boolean equals(java.lang.Object);
+  public java.time.LocalDate date();
+  public java.lang.String description();
+}
+
+----
+
+----
+javap -c -v provides more details
+----
+
+== Compact Constructor
+
+[,java,linenums]
+----
+include::Record1.java[]
+----
+
+As you see above usually a constructor will have parenthesis such as `point(){}` and that is called a canonical constructor. However, the compact construct is called after the canonical constructor.
+[,java,]
+----
+include::Record1.java[lines=6]
+----
+
+== Inheritance
+
+Look at the generated source code
+
+[,java]
+----
+// Original
+public record PurchaseOrder() implements Serializable { }
+
+// Compiled
+public final class PurchaseOrder extends java.lang.Record implements java.io.Serializable
+----
+
+. extends `Record` class which means cannot extend anything else.
+. marked as `final` which means cannot be extended.
+. can implement interface though.
+
+== Annotations
+
+You can apply annotations to fields of records just as any other field. In this example a new custom annotation is being created, but the annotation could be supplied by a library such as `Jackson` or `jakarta.persistance` etc...
+
+[,java,linenums]
+----
+include::Record2.java[]
+----
+
+== Implementing an interface
+
+Example of a record implementing an interface.
+
+
+[,java,linenums]
+----
+include::Record3.java[]
+----
+
+== Serialization
+
+Example of a record serialization. Take note about `transient`. Fields cannot be set as `transient`.
+
+
+[,java,linenums]
+----
+include::Record4.java[]
+----

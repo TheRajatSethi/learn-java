@@ -1,0 +1,103 @@
+:toc: left
+
+= MapStruct
+
+== Basics
+
+https://mapstruct.org/documentation/dev/reference/html/[Documentation]
+
+Basic steps include creating a mapper interface e.g. if you wish to map student dto to student entity
+
+[source,java]
+----
+@Mapper
+public interface StudentMapper
+----
+
+You can create a method which maps the student entity to student dto and vice versa. The field of source and targets can be defined.
+
+[source,java]
+----
+
+@Mapper
+public interface StudentMapper {
+
+    @Mapping(target = "name", source = "fullName")
+    @Mapping(target = "hobbies", source = "studentDto.hobbies", qualifiedByName = "customHobbyMapper")
+    StudentEntity getStudentEntityFromDto(StudentDto studentDto);
+
+}
+----
+
+== Custom Mapper
+
+You can create functions which provide custom logic for mapping 1 object to the other. E.g.
+
+[source,java]
+----
+@Named("customHobbyMapper")
+static ArrayList<String> customHobbyMapper(Hobbies hobbies){
+    ArrayList<String> h = new ArrayList<>();
+
+    if (hobbies.getChess()){
+        h.add("chess");
+    }
+    if (hobbies.getFootball()){
+        h.add("football");
+    }
+    if (hobbies.getMusic()){
+        h.add("music");
+    }
+    return h;
+}
+----
+
+Then this can be used in mapping as such
+
+[source,java]
+----
+@Mapping(target = "hobbies", source = "studentDto.hobbies", qualifiedByName = "customHobbyMapper")
+StudentEntity getStudentEntityFromDto(StudentDto studentDto);
+----
+
+The other approach is just to create a default method in the interface mapper which returns certain object in your object. MapStruct will then use this implementation automatically.
+
+E.g.
+
+[source,java]
+----
+default StudentEntity getEntityFromDtoCustom(StudentDto studentDto){
+    StudentEntity studentEntity = new StudentEntity();
+    studentEntity.setName(studentDto.getFullName());
+    return studentEntity;
+}
+----
+
+== Update instead of create
+
+You can also use MapStruct to update a bean instead of mapping and creating a new bean. Note the method type is `void`. You use `@MappingTarget` for the same.
+
+[source,java]
+----
+@Mapper
+public interface CarMapper {
+
+    void updateCarFromDto(CarDto carDto, @MappingTarget Car car);
+}
+----
+
+
+== Mapping Map to Bean
+
+If you have a Map you can map that to Bean. They below example will take the key `customerName` from the map and map it to the field `name` in the java class.
+
+[source,java]
+----
+@Mapper
+public interface CustomerMapper {
+
+    @Mapping(target = "name", source = "customerName")
+    Customer toCustomer(Map<String, String> map);
+
+}
+----

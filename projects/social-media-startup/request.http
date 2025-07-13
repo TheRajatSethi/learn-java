@@ -1,0 +1,16 @@
+POST http://127.0.0.1:7070/user
+Content-Type: application/json
+
+{
+    "email" : "sam@gmail.com",
+    "password" : "password1",
+    "name" : "Sam"
+}
+
+###
+POST http://127.0.0.1:7070/group
+Content-Type: application/json
+
+{
+    "name" : "Best Group in the world"
+}

@@ -1,0 +1,41 @@
+= Java Performance
+
+== Memory
+image:images/9.drawio.svg[]
+
+
+*Links
+
+. https://sergiomartinrubio.com/articles/java-memory-model-overview/[Java Memory Model Overview]
+. https://www.youtube.com/watch?v=c755fFv1Rnk[Memory footprint of a Java process]
+
+
+== GC
+
+== GC available in OpenJDK by default
+
+- SerialGC
+- G1GC
+- ZGC
+
+
+== AOT vs JVM
+
+
+== Graal VM
+
+
+== Tools for performance testing java applications
+
+
+== Performance tuning Java applications in container envs
+
+== Links
+https://www.youtube.com/watch?v=wApqCjHWF8Q[Youtube Talk]
+
+
+== GC Algorithms
+
+JVM uses mark and weep strategy to free up memory
+
+. Tri Color Algorithm (using stack or queue)

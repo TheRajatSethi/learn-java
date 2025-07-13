@@ -1,0 +1,198 @@
+:toc: left
+
+= Java - Language & Runtime
+
+== History
+
+- Started in 1991 Java was first released in 1995 by Sun Microsystems
+- Oracle bought Sun in 2010 thus buying Java.
+	- Oracle owns the trademark, 'Java', which they do enforce quite actively. 
+	- They also own things like the JavaFX trademark
+
+
+== Major Features in various versions
+
+=== Java 9
+
+- Java Module System : The Java Platform module system introduces a new kind of Java programming component, the module, which is a named, self-describing collection of code and data. Its code is organized as a set of packages containing types, that is, Java classes and interfaces; its data includes resources and other kinds of static information. Modules can either export or encapsulate packages, and they express dependencies on other modules explicitly.
+- Checkout https://openjdk.org/projects/jigsaw/ for the above.
+
+=== Java 10
+
+
+=== Java 11
+
+- local variable type inference `var`
+ 
+
+=== Java 12
+
+- Nothing major just a bunch of previews
+
+=== Java 13
+- Nothing major just a bunch of previews
+
+=== Java 14
+- Nothing major just a bunch of previews
+
+=== Java 15
+
+- Text Blocks
+
+=== Java 16
+
+- Records
+- Pattern matching for `instanceOf`
+
+=== Java 
+
+- Sealed Classes
+
+=== Java 18
+- Nothing major just a bunch of previews
+
+=== Java 19
+- Nothing major just a bunch of previews
+
+=== Java 20
+- Nothing major just a bunch of previews
+
+=== Java 21
+- Record Patterns
+- Pattern Matching for switch Expressions and Statements
+- Virtual Threads
+
+== Specification
+- Java starts with Java Specification - especially Java SE specification. You can checkout the specs [here](https://docs.oracle.com/javase/specs/)
+	- The specification has different versions like 21, 20 .... 8 ... 
+	- It contains the language, api, virtual machine etc...
+- The specification is advanced through the [JCP]([The Java Community Process(SM) Program (jcp.org)](https://www.jcp.org/en/home/index)) via JSR (Java Specification Request). 
+
+There are two specifications of JavaSE
+- Language Specification
+- Virtual Machine Specification
+
+== Implementation
+
+=== Language Specification Implementation
+
+- JDK (Java Development Kit) is the reference implementation of the Java Language Specification
+	- JDK will have versions like for specification v21 we will have JDK 21
+	- You can see the code for OpenJDK on github [here]([openjdk/jdk: JDK main-line development https://openjdk.org/projects/jdk (github.com)](https://github.com/openjdk/jdk))
+	- Once a particular version is released that point the repo is cloned e.g. [JDKv21]([openjdk/jdk21: https://openjdk.org/projects/jdk/21 released 2023-09-19 (github.com)](https://github.com/openjdk/jdk21))
+	- Then for that version only the `u` or `update` repo receives the code such as [JDKv21u]([openjdk/jdk21u: https://openjdk.org/projects/jdk-updates (github.com)](https://github.com/openjdk/jdk21u))
+		- Updates are done by independent community members
+		- Updates are done by community members who are part of companies such as Oracle, IBM, SAP, Amazon etc...
+- JDK is developed by
+	- OpenJDK which creates the open source reference implementation of the java specification.
+
+Open JDK does not guarantee how long does the community contributes to the `u` version of the JDK. However the vendors get license fee and generally its agreed that they will contribute patches or maintenance to major versions of java (again these are not official major version but community decided major versions) such as 8, 11, 17, 21 etc...
+
+
+=== JVM Implementation
+- HotSpot - by OpenJDK
+- Eclipse OpenJ9 - (The JVM, formally known as the J9 virtual machine, was donated to **the Eclipse Foundation** by IBM, who continue their development activities in the open.)
+- GraalVM
+- Azul Platform Prime
+
+== Builds / Vendors
+Open JDK just provides the reference implementation of the specification not the build binaries. Its the vendors who provide the binaries of the jdk implementation.
+
+Some vendors
+- Just use OpenJDK codebase
+- `OR` Have own patches / functionality on top of the codebase. - for which they can charge premium support etc...
+- `OR` Can have different JVM used instead of HotSpot
+- `OR` Can use CraaC etc...
+- `OR` specific error messages for null pointers e.g. SapMachine
+- `OR` specific security patches and quicker release schedule
+- ... customizations can be endless
+
+__Some Vendors who provide binaries are__
+- IBM
+- SAP - Sap Machine
+- Amazon - Cornetto
+- Azure
+- Azul - Playform Prime
+- RedHat
+- Temurin by Eclipse 
+- Dragonwell by Alibaba (Mainly China)
+- Bi Sheng (Mainly China)
+- Kona (Mainly China)
+- Oracle JDK
+- Oracle Open JDK
+	- Has only few builds available and not continuous builds
+- GraalVM (Not really open jdk thus put it last but people do use it)
+- ... :) Like 20 or so providers
+
+=== RHEL / OpenShift etc...
+- A lot of banks are using OpenShift and they use RHEL on OS. 
+- [Red Hat build of OpenJDK](https://access.redhat.com/products/openjdk/) is a build of the Open Java Development Kit (OpenJDK) with long-term support and patches from Red Hat. It is distributed as part of Red Hat Enterprise Linux, but is also available with [OpenShift](https://www.redhat.com/en/technologies/cloud-computing/openshift) and [Red Hat Middleware](https://developers.redhat.com/middleware). It is available on Linux, Windows, macOS, and as container images.
+- Red Hat only provide support for Red Hat build of OpenJDK
+- RedHat also supports Eclipse Temurin build of the OpenJDK on RHEL
+
+== JCK
+Anyone can download the OpenJDK source code and build it. However to certify its compliance with the Java SE Specification is determined exclusively through the use of Oracle’s [Technology Compatibility Kit](https://en.wikipedia.org/wiki/Technology_Compatibility_Kit) (TCK) for the Java Platform, also referred to as the Java Compatibility Kit (JCK).
+
+The JCK test kit is the property of Oracle, and is not available under an open source license.
+
+== JDK vs JRE
+
+-   JRE - Java runtime envirounment contains
+    - Java Virtual Machine
+    - Java Class Libraries
+
+-   JDK - Java development Kit contains
+	- JRE
+	- Javac Compiler
+	- Debugger
+	- JavaDoc
+
+Generally for microservice you should use JRE to run in production and not JDK. Some nuances below.
+
+- Below JDK 9
+	- Development - Use JDK
+	- Production - Use JRE
+- Above JDK 8
+	- Development - Use JDK
+	- Production - Use `JLINK` to create custom JRE.
+		- Note :- Not every distribution will give you a JRE in the future. `JLINK` will be the new preferred way to go.
+		- With `JLINK`  you can choose which class libraries to include when building your JRE. Ones which you do not use can be removed thus reducing size and attack surface in production.
+
+== Building JRE's
+=== JLINK =TODO 
+=== JDEP =TODO
+=== JPACKAGE =TODO
+
+
+== References
+- [Java Jungle](https://www.youtube.com/watch?v=7kURkyISzyM)
+
+
+== Community
+=== Good Java Speakers
+Good Java Speakers to learn from (Just google them java) 
+
+- Venkat 
+- José Paumard 
+- Stuart Marks 
+- Steve Pool 
+- Brian Goetz 
+
+Java Platform is made up of: -
+
+-   Java Programming Language
+-   Java Runtime Env (JVM)
+-   Standard Library
+
+All of the above are combined in the JDK
+
+Java code compiles to application bytecode. Java Bytecode can then be
+translated to machine code by JVM or the Java runtime envirounment.
+
+**Steps in compiling a Java File**
+
+1.  Create a java file using the `.java` extension.
+2.  The source code is compiled to bytecode using `javac`. This then
+    creates a file of extension `.class`
+3.  Then you can use the `java` command which starts up the JVM and
+    executes the `.class` file on the JVM.

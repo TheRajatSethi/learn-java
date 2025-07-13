@@ -1,0 +1,63 @@
+:toc:
+
+= Generics
+
+== Overview
+
+=== Methods
+
+Generics are used when the type of the object is not either clear or the same method/class can be used with multiple types. Raw use of generics is discouraged because it can lead to non typesafe code.
+
+. Classes can specify generic parameters
+. Methods can be generic too
+
+Let us start with a simple class where just the method is generic.
+
+[,java]
+----
+include::src/main/java/generics/Generics2.java[]
+----
+
+The method `public static <T> T methodA(T t)` accepts a type `T` and returns the same type `T`.
+
+=== Class
+
+Classes can be set for generic types such as below.
+
+[,java]
+----
+include::src/main/java/generics/Generics1.java[]
+----
+
+=== Bounded Type
+
+Generics can be bounded i.e. constraint applied on them that they should satisfy the following condition e.g. `<T extends Number>`
+
+[,java]
+----
+include::src/main/java/generics/Generics3.java[]
+----
+
+You can also have types with multiple bound condition such as `<T extends Number & List>`
+
+=== Wildcard
+
+Question mark `?` is used as wildcard, which can be used instead of the type parameter `T`
+
+The differences between wildcard and type parameter are given below.
+
+. A wildcard can have only one bound, while a type parameter can have several bounds.
+. A wildcard can have a lower or an upper bound, while there is no such thing as a lower bound for a type parameter.
+
+
+[,format=csv]
+|===
+upper bound,? extends SuperType
+lower bound,? super   SubType
+|===
+
+
+[,java,linenums]
+----
+include::src/main/java/generics/Generics4.java[]
+----

@@ -1,0 +1,24 @@
+:toc: left
+
+= Functions & Lambdas
+
+== Lambda expression
+
+Lambda expressions shorten code `period`.
+
+Let us consider that we wish to implement a function by implementing interface `java.util.function.Function` which takes in argument and produces a result.
+
+[,java]
+----
+static class DoubleMeVerbose implements Function<Integer, Integer>{
+    @Override
+    public Integer apply(Integer integer) {
+        return integer * 2;
+    }
+}
+----
+
+The above can be shortened to `Function<Integer, Integer> DoubleMeCompact = (x) -> x*2;` if you wish to create your own function and any method which takes in a `Function` can be supplied just a lambda expression such as `(x) -> x*2` shortening it even more.
+
+== Exploring java.util.function
+

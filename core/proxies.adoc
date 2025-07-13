@@ -1,0 +1,59 @@
+= Proxy
+
+Proxy design pattern talks about using something `instead` of.
+
+There can be many use cases for proxy e.g.
+- Security - which implements certain security related concerns.
+- Logging - log something before and after the function call. 
+- Auditing - audit something to the table before and after function call.
+- Caching - cache something
+- Transaction - make something as a transaction e.g. in Spring boot annotation `@Transactional`
+- ...
+
+
+== Static Proxy
+
+Let's create a static proxy example to understand further.
+
+Let's say we have a service which does something and implements an interface.
+
+[source,java]
+----
+interface IService{
+    void doSomething();
+}
+
+
+static class Service implements IService{
+    @Override
+    public void doSomething() {
+        System.out.println("Doing Something...");
+    }
+}
+----
+
+And we would like to add some cross cutting conerns in this service which may be used in many other places such as logging, auditing etc...
+
+Instead of putting the logic in many diff places or in 1 place but calling the logic (e.g. method) from each method/service we can inject this logic into a Proxy.
+
+Let's create this static proxy.
+
+[source,java]
+----
+ static class ServiceProxy extends Service{
+    @Override
+    public void doSomething() {
+        System.out.println("Do something in proxy before call to actual method");
+        super.doSomething();
+        System.out.println("Do something in proxy after call to actual method");
+    }
+}
+----
+
+Now when someone asks for an instance of `Service` we give them an instance of `ServiceProxy`. This is usually managed by dependency injection framework, or you can wire this up yourself like in this simple example.
+
+link:proxies/P1.java[P1.java]
+
+== Dynamic Proxy
+
+link:proxies/P2.java[P2.java]

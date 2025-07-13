@@ -1,0 +1,15 @@
+{#include base}
+{#title}Index Page{/title}
+<div>
+    <form method="post" action="/register">
+        <h4>Login</h4>
+        <input type="email" name="email" placeholder="email" required>
+        <input type="password" name="password" placeholder="password">
+        <button type="submit">Login</button>
+    </form>
+    <br><br>
+    <p>
+        Not a user - <a href="/register">Signup</a>
+    </p>
+</div>
+{/include}

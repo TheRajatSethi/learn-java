@@ -1,0 +1,84 @@
+:toc:
+
+= Async Programming in Java
+
+One of the ways to create async code in Java is CompletableFuture in addition to Future, RxJava & VirtualThreads etc...
+
+== CompletableFuture
+
+Was released in Java-8 was a successor to `Future` which was released in Java 5. It brings in many benefits over the Java-5 version of the `Future`
+
+- Ability to complete the future
+- Much better exception handling
+- Chaining Futures.
+
+The `CompletableFuture` implements both the `Future` and `CompletionStage` interface. There are 2 main methods which are interesting
+
+- `runAsync` - useful where you just need to fire the process and not return any value from it.
+- `supplyAsync` - useful where you need to perform some operations which returns a result.
+
+Completable future will perform tasks in `ForkJoinPool.commonPool()` or we can pass in our own Executor Thread pool.
+
+'''
+
+Proceeding to concrete examples ...
+
+Let's say you have a long-running process.
+
+[source,java]
+----
+static Integer compute(int n) {
+    return n * 2;
+}
+----
+
+You can call that in async fashion using `CompletableFuture`
+
+[source,java]
+----
+CompletableFuture.supplyAsync(() -> compute(10)); // non-blocking because it's a CompletableFuture
+----
+
+However, when you have a small delay you won't see the output because we are not asking Java to wait until the completable future is done and then proceed with the next steps. link:CF1.java[CF1.java] demonstrates this. When the CF is executing the main thread does not need to wait, it can continue with some other task and then wait for CF to complete down below. Below is the essence of the code. Complete example link:CF2.java[CF2.java]
+
+[source,java]
+----
+var cf = CompletableFuture.supplyAsync(() -> compute(10)); // non-blocking because it's a CompletableFuture
+
+// Doing some other work until the CF is executing.
+...
+
+cf.get() // Wait for CF to be complete here.
+OR
+cf.join() // Wait for CF to be complete here.
+----
+
+__Running on Custom ThreadPool__
+
+The task can also run on own defined ThreadPool instead of running on CommonPool Core essence below.
+
+[source,java]
+----
+ExecutorService executorService = Executors.newCachedThreadPool();
+
+// Running on our defined ThreadPool
+var cf = CompletableFuture.supplyAsync(() -> compute(10), executorService);
+----
+
+Full example link:CF3.java[CF3.java]
+
+== Using Callback
+
+- Just don't fall into callback hell :D
+
+- `thenApply`
+- `thenAccept`
+- `thenRun`
+
+Using the above makes it easy to chain methods however if there are exception scenarios makes it difficult to use `catch` which is `exceptionally` in this context to catch them. All of these are solved using Virtual Threads. Example of a callback is in link:CF4.java[CF4.java]
+
+
+== Important Methods
+
+- TODO
+

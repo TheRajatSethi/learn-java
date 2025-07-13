@@ -1,0 +1,18 @@
+{% extends "templates/base.html" %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<h1> Home </h1>
+<p> Welcome to my home page. My name is {{ name }}.</p>
+<hr>
+<br>
+
+<form action="/new" method="post">
+    <input type="text" name="fname">
+    <input type="text" name="lname">
+    <input type="checkbox" name="something">
+    <button type="submit">Submit</button>
+</form>
+
+{% endblock %}

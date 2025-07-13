@@ -1,0 +1,185 @@
+:toc: left
+
+= Generics
+
+IMPORTANT: Probably need to come back to this course after I study some
+general concepts of generics from youtube or book which are more basic
+than this one.
+
+== Basics
+
+The java collections can take any type of value as shown below. This
+will create a problem because we may not be able to control what type of
+value will go inside the `list` and cannot program reliably.
+
+[source,java]
+----
+package com.company;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+
+    public static void main(String[] args) {
+        List list = new ArrayList();
+
+        list.add(1);
+        list.add("HEllo world");
+
+        for (Object a: list) {
+            System.out.println(a);
+        }
+
+    }
+}
+----
+
+Instead, we should have a list which only contains `Strings` thus we can
+work reliably with it. This is done with the help of generics similar to
+in C++.
+
+[source,java]
+----
+List<String> list = new ArrayList<>();
+----
+
+Creating a simple generic class.
+
+[source,java]
+----
+package com.company;
+
+public class CircularBuffer<T>{
+    private T[] buffer;
+    private int readCursor;
+    private int writeCursor;
+
+    public CircularBuffer(int size){
+        buffer = (T[]) new Object[size];  // creating an object array of size and then cast to type T
+    }
+
+    public boolean offer(T value)
+    {
+        if (buffer[writeCursor] != null)
+        {
+            return false;
+        }
+
+        buffer[writeCursor] = value;
+        writeCursor = next(writeCursor);
+
+        return true;
+    }
+
+    public T poll()
+    {
+        final T value = buffer[readCursor];
+
+        if (value != null)
+        {
+            buffer[readCursor] = null;
+            readCursor = next(readCursor);
+        }
+        return value;
+    }
+
+    private int next(int index)
+    {
+        return (index + 1) % buffer.length;
+    }
+
+    public static void main(String[] args)
+    {
+        CircularBuffer<String> buffer = new CircularBuffer<>(10);
+
+        buffer.offer("a");
+        buffer.offer("bc");
+        buffer.offer("d");
+
+        StringBuilder result = new StringBuilder();
+
+        String value;
+
+        while ((value = buffer.poll()) != null)
+        {
+            result.append(value);
+        }
+
+        System.out.println(result.toString());
+
+    }
+
+}
+----
+
+Constraints
+
+- Lets say you wish to create a generics class which should only take in types of numbers such as Integer, Short, etc... In that case when creating the extend the Numbers class
+
+[source,java]
+----
+class MyGenericClass <T extends Numbers>{
+
+}
+----
+
+You can also do this with interface e.g. if you only wish to store objects which implements comparable specify that
+
+[source,java]
+----
+class MyGenericList<T extends Comparable>{
+
+}
+----
+
+You can also specify multiple interfaces
+
+[source,java]
+----
+class MyGenericList<T extends Comparable & Cloneable>{
+
+}
+----
+
+You can also have generic methods in non generic classes as shown below and can apply certain constraints on them.
+
+[source,java]
+----
+public class Utils{
+    public static <T extends Comparable<T>> max(T first, T last){
+        // do your thing
+    }
+}
+----
+
+You can have multiple type parameters for generics as shown below.
+
+[source,java]
+----
+public static <K, V> void print(K key, V value){
+
+}
+----
+
+You can do the same with classes
+
+[source,java]
+----
+public class KeyValuePair<K, V>{
+    public K key;
+    public V value;
+
+    public KeyValuePair(K key, V value){
+        this.key = key;
+        this.value = value;
+    }
+}
+----
+
+Generics wildcards
+
+[source,java]
+----
+TBD
+----

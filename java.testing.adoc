@@ -1,0 +1,78 @@
+:toc: left
+
+= Junit 5
+
+== Surefire plugin
+
+Used mostly to trigger Junit5 in CI/CD platforms.0.
+
+== Basic annotations
+
+Important annotation on method which control test run
+
+[,java]
+----
+@Test  // test
+@RepeatedTest(10) # repeat test 10 times
+
+@BeforeEach // runs before each test method run
+@AfterEach // runs after each test method run
+@BeforeAll // runs once before anything else runs even test class instance is created after the before all method
+@AfterAll
+
+@Description("some desc")
+
+@Deprecated # deprecated test - no need to run
+@EnabledIf
+@EnabledOnOs
+@EnabledOnJre
+@EnabledIfEnvironmentVariable
+----
+
+Examples
+
+[,java]
+----
+@RepeatedTest(10)
+void test(){
+    assertEquals(30, Calculator.add(10, 20));
+}
+----
+
+== Parameterized Testing
+
+Test methods can be labeled as `@ParameterizedTest `. The value source can be either from a method, value or in below example a csv.
+E.g.
+
+* @CsvSource
+* @ValueSource
+* @EnumSource
+* @MethodSource
+* @CsvFileSource
+
+[,java]
+----
+class ScoreCalcTest {
+
+ @ParameterizedTest
+ @CsvSource({"10,10,100", "5,5,25"})
+    public void testAllCombs(int a, int b, int expected){
+        assertThat(ScoreCalc.c(a, b)).isEqualTo(expected);
+    }
+
+}
+----
+
+== AssertJ
+
+A friendlier assertion library.
+
+Simple use case
+
+[,java]
+----
+assertThat(ScoreCalc.c(a, b))
+	.isEqualTo(expected);
+----
+
+== Mockito

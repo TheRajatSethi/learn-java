@@ -1,0 +1,6 @@
+= Logging
+
+- sl4j -> framework
+- by default uses logback
+- can use log4j2
+- setting json in logging https://www.jvt.me/posts/2021/05/31/spring-boot-structured-logging[Migrating Your Spring Boot Application to use Structured Logging]

@@ -1,0 +1,1 @@
+This package shows the api first approach. You document the openapi specification and then generate the java models with the specification.

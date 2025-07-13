@@ -1,0 +1,119 @@
+= Java Web Fundamentals
+
+== Web basics
+
+Also checkout https://developer.mozilla.org/en-US/docs/Learn[mozilla web basics] for further details and https://developer.mozilla.org/en-US/docs/Web/HTTP[http] details.
+
+
+__TCP/IP__
+
+IP - IP address (resolved by DNS against the domain name)
+TCP - Makes sures that the packets which are exchanged b/w server and client end up in order to their destination.
+
+__Http__
+Hyper text transfer protocol is a [protocol](https://developer.mozilla.org/en-US/docs/Web/HTTP) for fetching different types of contents such as text, layout description, images, videos, scripts, and more.
+
+__Request and Response Headers__
+
+
+__Web Container vs Web Server__
+- Web server like apache web server is able to serve static content.
+- Web container like tomcat is needed to serve dynamic content.
+
+== Java Web stuff history
+
+- Initially it was all part of Java
+- Then moved to J2EE
+- Then moved to Java EE
+- Then in 2017 Java EE license was given to Jakarta EE
+
+So if you wish to use the latest version use the Jakarta servelet. As of writing this the latest version is v 5.0
+
+__Developing simple web app with Intellij Community edition__
+
+Use tomcat smart runner plugin as intellij community does not support tomcat.
+
+Also static pages such as index.jsp are directly served no need for servlet. E.g. you can just have `index-copy.jsp` which you can open via `http://localhost:8080/servlets-basics/index-copy.jsp`.
+
+== First servlet
+
+- Create a servlet
+- In your web.xml file do servlet mapping to url mapping
+
+[source,java]
+----
+package com.rs;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+
+public class HelloServlet extends HttpServlet {
+
+    // Returns a response on get request
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("text/html");  // specifing that the type of content is html content
+        PrintWriter out = resp.getWriter();
+
+        out.println("<H1>Hello from my servlet</H1>");
+        out.println(LocalDateTime.now());  // sort of dynamic content sending outwards
+    }
+
+}
+----
+
+web.xml file and our java servlet class is located as shown below
+
+[source]
+----
+├───src
+│   └───main
+│       ├───java
+│       │   └───com
+│       │       └───rs
+│       │               HelloServlet.java
+│       │
+│       └───webapp
+│           │   index-copy.jsp
+│           │   index.jsp
+│           │
+│           └───WEB-INF
+│                   web.xml
+----
+
+[source,xml]
+----
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+
+    <!-- Specifying that when req comes to HelloServlet use servlet com.rs.HelloServlet to resolve it -->
+  <servlet>
+    <servlet-name>HelloServlet</servlet-name>
+    <servlet-class>com.rs.HelloServlet</servlet-class>
+  </servlet>
+
+    <!-- Specifying that when request comes to /hello use HelloServlet created above to fullfil that req -->
+  <servlet-mapping>
+    <servlet-name>HelloServlet</servlet-name>
+    <url-pattern>/hello</url-pattern>
+  </servlet-mapping>
+
+  <!-- You can also specify that if there no url match what file to display in order of listing-->
+  <welcome-file-list>
+    <welcome-file>default-file-1.html</welcome-file>
+    <welcome-file>default-file-2.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>
+----
+
+There has to be some compatability between tomcat and servlet api version. Check [here](https://github.com/TinaXing2012/servlet-jsp/blob/master/notes/Jakarta%20Servlet%20and%20Tomcat%20Support.md?ref=https://githubhelp.com) for more details.
+
+`web.xml` file is no longer mandatory you can use annotations to do the same config, some global config such as sessions and other such as ordered filter sill require web.xml file.
+
+== Continue with lesson 13 https://www.youtube.com/watch?v=EDdf6SGjsaI&list=PLGTrAf5-F1YIX68uT78FFtA3R3zajVFJz&index=13

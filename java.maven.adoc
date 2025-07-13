@@ -1,0 +1,124 @@
+= Maven
+
+Its a `declarative` project build automation build tool such as gradle. `Ant` was imperative and was first to arrive at the scene
+- code compilation
+- tests
+- dependency import
+- executable file creation
+- ...
+
+Its written in java, primarily for java.
+
+`pom.xml` project object model file is a file containing all configuration of the project. At the end `maven` produces a artifact which can be ear, war, jar executable file which is stored in `target/` directory.
+
+== Important Tags
+
+- `groupId` - reverse name of website
+- `artifactId` - name of project
+- `version` - version of project
+- `packaging`
+	- jar - java archive
+	- war - web archive
+	- ear - enterprise archive
+	- pom - this project has no source code, mostly used in multimodule builds where the parent pom is just used to configure dependencies, versions for all modules. (Mostly dependencyManagemnet & pluginManagement). Then these dependencies and plugins are used in module level pom files if they want to be used there.
+- `properties` - most commonly used to keep versions of dependencies
+- `repositories` - by default maven downloads all dependencies from maven central which is defined in the super pom - which also stores the project structure etc...
+	- however you can have custom repositories
+- `dependencies` - used to declare dependencies
+	- scope - on which stage of project this library is allowed to work 
+		- compile - (**default**) - allowed on all stages
+		- provided - code compilation & test e.g. lombok, not be included in java archive file.
+		- runtime - allowed in runtime & test stage, now allowed on compilation - e.g. jdbc
+		- test - compile and runtime on tests - not included in jar
+	- transitive dependency - its a dependency which is included by your dependency
+	- `build`
+		- `plugins`
+
+
+== Maven Lifecycle
+
+Maven has 3 lifecycles, lifecycle can have phases in it e.g. default has multiple phases in it. 
+
+. site - creates a website with info about project. This will create a `site` folder in `target` and you can browse details of your project. `mvn site`. Gives you a nice view of your project
+. clean - removes `target/` folder
+. default (Has many phases - which are part of a lifecycle)
+.. compile - compiles source code, evals all .java files and moves to target.
+.. test-compile - same as compile but for test folder
+.. tests - run tests
+.. package - packages compiled project files into executables
+.. install - puts executable into local repository where it can be imported by local projects
+.. deploy - copies executable to remote repo for sharing with developers
+
+Phases are consecutive (order as below). Lets say if you run `install` it will run all the above phases in the default lifecycle
+
+- validate
+- compile
+- test
+- package
+- verify
+- install
+- deploy
+
+You can skip a phase though e.g. `mvn package -Dmaven.test.skip=true` if you'd like.
+
+== Maven Goals
+
+- Its a unit of work
+- In most cases goals are linked to phases.
+- Every goal runs with a specified plugin e.g. compiler plugin runs goals *compile* & *test compile*
+- Example goals `<name of plugin : goal>`. You can run this e.g. `mvn compiler:compile`
+	- resources : resources
+	- compiler : compile
+	- resources : testRespuces
+	- compiler : testCompile
+	- surefire : test
+	- jar : jar
+	- install : install
+	- deploy : deploy
+
+== Maven Plugins
+- Its a java class assembled in a special way which runs goals.
+- Every plugin contains its own goals which can be executed with only this plugin
+- Plugins directory https://maven.apache.org/plugins/maven-pmd-plugin[Apache Maven PMD Plugin – Introduction]
+- To configure plugins you have to put those options in the `build` part of the pom.xml or in cmd line arguments. (Easier in pom.xml as its used forever then)
+
+== Maven Profiles
+Set of configurations which rewrites the project based on selected profile e.g. different operating system.
+
+[source,xml]
+----
+<profiles>
+	<profile>
+		<id>production</id>
+	</profile>
+</profiles>
+----
+
+So when you run mvn command specify the profile `mvn -Pproduction package` where production is the name of the profile.
+Profile can also have activators which will trigger profile automatically based on conditions.
+
+[source,xml]
+----
+<profiles>
+	<profile>
+		<id>production</id>
+		<activation>
+			<activeByDefault>true</activeByDefault> <!-- There are other activators as well. -->
+		</activation>
+	</profile>
+</profiles>
+----
+
+== Multi-module project
+- Mostly the parent will have packaging  = pom
+- Module pom inherit from parent pom
+- Its important to have executable files of modules as light as possible - just import what you need.
+
+Best practices
+- Use dependency management
+- Use plugin management
+
+== Commands
+
+- `mvn site` - creates a site about your project
+- `mvn package` - packages project based on packaging instruction in the pom

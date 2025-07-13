@@ -1,0 +1,734 @@
+:toc: left
+
+= Core platform and libraries
+
+== Streams
+
+* Streams in java are ordered input and output data
+* It provides a common input and output model
+* Streams are unidirectional
+* Abstracts away the underline source of destination of the data
+(abstracts storange or where data is coming from)
+* You can have input stream
+* you can have output stream
+* stream can be either a binary stream or character stream
+
+'''
+
+* Reading streams
+ ** Binary (The base class for this is InputStream)
+ ** Text (The base class for this is Reader)
+
+'''
+
+There are various methods which are used when reading stream data
+
+* read() --> reads 1 byte at a time
+* read(byte[] buff) or read(char[] buff) --> read the data which
+can fit into buff
+
+If you see the below examples it may look like we are creating instances
+of InputStream, OutputStream, Reader or Writer. These are however
+abstract classes and cannot be instanciated. There are various
+subclasses of these which will be inherited based on the type of stream
+e.g. CharArrayWriter, StringWriter, PipedWriter, InputStreamReader,
+OutputStreamWriter etc...
+
+[,java]
+----
+// Reading one byte(binary) at a time.
+InputStream input = // create input stream
+int intVal
+
+while((intVal = input.read()) >= 0){  // end of stream is indicated by .read() method returning -1
+    byte byteVal = (byte)intVal;
+    // now you can do something with byte value.
+}
+----
+
+[,java]
+----
+// Reading one character at a time.
+Reader input = // create input stream
+int intVal
+
+while((intVal = input.read()) >= 0){  // end of stream is indicated by .read() method returning -1
+    byte byteVal = (chat)intVal;
+    // now you can do something with chat value.
+}
+----
+
+[,java]
+----
+// Reading multiple byte(binary) at a time.
+InputStream input = // create input stream
+int length;
+byte[] byteBuff = new byte[10];
+
+while((length = input.read()) >= 0){  // end of stream is indicated by .read() method returning -1
+    for (int i=0; i<length; i++){  // now we have array of byte, so loop on array to get single byte and do something with it.
+        byte byteVal = byteBuff[i];
+        // do something with byteval.
+    }
+}
+----
+
+'''
+
+_Writing values_
+
+[,java]
+----
+OutputSteam output = // create stream
+byte value = 100;
+
+output.write(value);
+
+byte[] byteBuff = {0, 63, 127};
+output.write(byteBuff);
+----
+
+[,java]
+----
+Writer output = //create stream
+
+char a = 'A';  // can write single char
+output.write(a);
+
+char[] b = {'a', 'b'};  // can write array of char
+output.write(b);
+
+String c = "HEllo"; // can write a string
+output.write(c);
+----
+
+Usually when you are dealing with streams you will be using try and
+catch or try with resources and then closing down the stream as shown
+below.
+
+[,java]
+----
+try{
+    reader = // open reader;
+}catch (IOException e){
+
+}finally(){
+    if (reader != null){
+        try{
+            reader.close();
+        }catch(){}
+    }
+}
+----
+
+'''
+
+*Use try with resources*
+
+The above close gets complicated (its still simplified on top) so use
+try with resources. Try with resources handles the following exceptions
+
+* Automate cleans ups of 1 or more resources
+* Handle try body
+* Also handles close method calls and exceptions
+
+[,java]
+----
+try(
+    reader = //open reader
+){}
+catch{}
+----
+
+'''
+
+*DEMO*
+
+Check stream --> slides and demos. The interface AutoCloseable has a
+method close. The try and catch block will auto call this method close()
+even if its not called explicitly so the resources are freed up. Also
+when you use try with resources you may get only 1 exception however
+there may be other exceptions which are not printed out. So in that case
+use method `getSuppressed` and you can loop on this and print out all
+the suppressed exceptions.
+
+'''
+
+*Chaining Streams*
+
+You can chain streams together.
+
+Java provdes FilterReader, FilterWriter, FilterInputSteam and
+FilterOutputStream abstract classes which provide easier customization
+for chaining streams.
+
+'''
+
+== Interacting with Files
+
+java.io classes are depricated use java.nio.file for file handling.
+
+* Use Paths class to locate something in the file system or directory.
+* Use Files static method to interacting with files.
+ ** Create, copy delete etc...
+ ** Open file streams like newBufferedReader, newBufferedWriter,
+newInputStream, newOutputStream
+ ** Read/write file contents using readAllLines, write
+
+(If you see in the pluralSight course this below example was not
+accepted by Java, so modified it a little and it works)
+
+[,java]
+----
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+public class ReadFiles {
+    public static void main(String[] args) throws IOException {
+
+        try(
+            BufferedReader br = Files.newBufferedReader(Paths.get("file.txt"));
+        ){
+            String data;
+            while ((data = br.readLine()) != null){
+                System.out.println(data);
+            }
+
+        }
+
+    }
+}
+----
+
+'''
+
+*Working with File Systems*
+
+When we work with file systems we usually work with computers default
+file system. java also supports specialized file systems like Zip file
+system.
+
+So we use the File System Type which represents the file system. Class
+--> FileSystem
+
+Check slide and programs for additional references. (Code demos are
+avaiable there)
+
+== Strings
+
+Basic concatenation and Stringbuilder are not powerful enough to create
+complicated strings. so we will be looking at more powerful ways.
+
+* StringJoinr --> Simplifies joining a sequence of values.
+* String formatting --> used for desired appearance.
+
+*String Joiner*
+
+[,java]
+----
+import java.util.StringJoiner;
+
+public class StringJoinerDemo {
+    public static void main(String[] args) {
+
+        StringJoiner sj = new StringJoiner(", ");  // specify the delimiter
+
+        sj.add("alpha");
+        sj.add("beta");
+        sj.add("gama");
+
+        System.out.println(sj.toString());  // output --> alpha, beta, gama
+
+        sj.add("abc").add("def");  // chaining methods --> return type of add is StringJoiner
+        System.out.println(sj.toString()); // output --> alpha, beta, gama, abc, def
+
+        StringJoiner sj1 = new StringJoiner("], [", "[", "]");
+        sj1.add("alpha");
+        sj1.add("beta");
+        System.out.println(sj1.toString()); // [alpha], [beta]
+    }
+}
+----
+
+'''
+
+*Format Specifiers*
+
+StringJoiner is pretty powerful however we sometimes need more power :)
+
+* Focus is on how things look
+* Not concerned with how.
+* Use methods like --> String.format or System.out.printf(),
+Formatter.format
+
+Parts of a format specifier -->
+`%[argument index][flags][width][precesion]conversoin`
+
+_Common Format Conversions_
+
+* d - decimal
+* o - octal
+* x = Hex
+* f - float
+* e - Scientific Notation
+* s - String (you can also pass objects not just strings here, if the
+class has Formattable then it will be used else will go with
+toString)
+* ....
+
+_Format Flags_ - `#`- Include radix - 0 - 0 pad value - `-` - left
+justify - `,` - Include grouping character - `space` - Leave space for +
+or - sign for positive numbers - `+` - always show signs
+
+You can also write formatted text to a stream not just on output screen.
+There is a class called the `Formatter` class which provides formatting
+capabilities. It can help us write formatted content to any class which
+implements the `Appendable` interface. The writer stream class
+implements the `Appendable` interface.
+
+e.g.
+
+[,java]
+----
+
+BufferedWriter writer = new Files.newBufferedWriter(Paths.get("data.txt"));  // it will close when formatter is closed.
+    try(Formatter f = new Formatter(writer)){ // creating a formatter over the writer stream
+        f.format("Hello %d", 10);
+    }
+----
+
+'''
+
+=== Regular Expressions
+
+Just basics here --> check other places for detials
+
+[,java]
+----
+String s1 = "apple, apple and orange please";
+String s2 = s1.replaceAll("ple\\b", "ricot");
+----
+
+[,java]
+----
+String s1 = "apple, apple and orange please";
+String[] parts = s1.split("//b");
+
+for(String part : parts){
+    if (part.matches("\\w+")){
+        System.out.println(part);
+    }
+}
+----
+
+Compilation of regular expression can be very processing intensive, so
+if you are doing this in a loop or over and over again its better to
+precompile the regular expression and apply.
+
+The `Pattern` class allows us to precompile the regex and then apply.
+Then the `Matcher` class can apply the compiled regex to an
+expression/string.
+
+[source,java]
+----
+String s1 = "apple, apple and orange please";
+Pattern pattern = Pattern.compile("\\w+");
+
+Matcher matcher = pattern.matcher(value1);
+
+while(matcher.find()){
+    System.out.println(matcher.group());
+}
+----
+
+'''
+
+== Controlling App Execution
+
+*Command Line Arguments*
+
+Arguments are passed as String arrays. Each argument is a seperate
+element. (seperated by space or if space put in quotes). In intellij you
+can pass arguemnts when you `edit configurations`
+
+[source,java]
+----
+public class CLIargsDemo {
+   public static void main(String[] args) {
+
+       for (String arg : args) {
+           System.out.println(arg);
+       }
+
+   }
+}
+----
+
+'''
+
+*Persistable Key Value Pairs*
+
+Apps often need persistable key value pairs for app config or initial
+load or other things like state or preferences. (Hashmap will only store
+when we are running program and its in memory). Use the
+`java.util.Properties` class for this.
+
+Properties Class --> Inherits from Hash Table.
+
+* Keys and values are string.
+* properties can be written to and from streams
+* can optionally include comments
+* supports 2 formats --> text and xml
+* key and value are separated by : or , or first white space
+* `#=or =!` start comment line
+
+[source,java]
+----
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.InvalidPropertiesFormatException;
+import java.util.Properties;
+
+public class PropertiesDemo {
+
+    public static void main(String[] args) {
+//        properties_reader();
+//        properties_writer_xml();
+        properties_reader_xml();
+    }
+
+    public static void properties_writer() {
+        Properties props = new Properties();
+
+        props.setProperty("key1", "value1");
+        System.out.println(props.getProperty("key1"));
+
+        try (Writer writer = Files.newBufferedWriter(Paths.get("abc.properties"))) {
+            props.store(writer, "Sample properties");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void properties_reader(){
+        Properties props = new Properties();
+        try(Reader reader = Files.newBufferedReader(Paths.get("abc.properties"))){
+            props.load(reader);
+
+            System.out.println(props.getProperty("key1"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // xml will work with output streams, so the output stream has to be stored as xml.
+    static void properties_writer_xml(){
+        Properties props = new Properties();
+
+        try(OutputStream out = Files.newOutputStream(Paths.get("abc.xml"))){
+
+            props.setProperty("key1", "value1");
+            props.storeToXML(out, "sample properties");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void properties_reader_xml(){
+
+        Properties props = new Properties();
+
+        try(InputStream in = Files.newInputStream(Paths.get("abc.xml"))){
+            props.loadFromXML(in);
+            System.out.println(props.getProperty("key1"));
+        } catch (InvalidPropertiesFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+----
+
+'''
+
+*Default Properties*
+
+Properties can also be created with default.
+
+[source,java]
+----
+static void propertiesWithDefault(){
+     Properties defaults = new Properties();
+     defaults.setProperty("os", "Windows");
+     Properties props = new Properties(defaults); // created with defaults
+ }
+----
+
+Usually a application will store default properties. For that when you
+are launching an aplication you can include .properties file in that
+application.
+
+*Default Class Loading*
+
+* Classes must be in .class files
+* Must be under package directory
+
+*Specifying class path*
+
+* You can specify the class path. (if you specify path then current
+directory has to be specified )
+* if doing via env variables use `CLASSPATH`
+* classpath is set for all programs and projects not just for current
+project
+
+*Class loading with -jar option*
+
+* Class loading is controlled by jar file
+* no other class loading source is used
+* provides tight control over class loading
+
+e.g. =java -jar ourapp.jar=
+
+== Java Log System
+
+Logs are used for various uses.
+
+* errors
+* usage info
+* debug
+* can be of different detail level
+
+Log System
+
+* its centrally managed
+* there is 1 app-wide log manager
+* manages log system config
+* manages objects that do actual logging
+* class `LogManager`. There will be 1 global instance of it.
+* `LogManager.getLogManager`
+* `Logger` class provides methods to do logging
+* use `getLogger` method to get to the logger from the log manager.
+* each logger instance is named
+* there is also a global logger `GLOBAL_LOGGER_NAME`
+
+Levels
+
+* Each log entry is associated with a level
+* Each logger has a capture level --> use `setLevel` method. The
+logger will ignore any entry below that level
+* Each level has a numeric value
+** 7 basic log levels
+** 2 special levels for Logger
+** you can also define custom log levels (its rare)
+** 1000 - SEVERE
+** 900 - WARNING
+** 800 - INFO
+** 700 - CONFIGURATION
+** 500 - FINE
+** 400 - FINER
+** 300 - FINEST
+** entering - logs at fine level
+** exiting - logs at fine level
+
+*Components of the log system*
+
+* Logger \-> Accepts app calls
+* Handler \-> Publishes logging info, a logger can have multiple
+handlers
+ ** As logger can have multiple handlers you can set level for each
+handler. (which should be more restrictive than the logger
+level)
+* Formatter \-> formats log info for publication. each handler has 1
+formatter.
+
+(check slides as they have a good diagram to explain this)
+
+*Built in Handlers*
+
+* The built in handlers inherit from the Handler class
+* You can write custom handlers but mostly you will not
+** ConsoleHandler --> writes to System.err
+** StreamHandler --> writes to specified output stream
+** SocketHandler --> writes to network socket
+** FileHandler --> writes to 1 or more files
+*** can output to single file
+*** can output to rotating set of files
+**** specify size in bytes
+
+File Handler Substitution patterns values (check demo below)
+
+* / - Platform specific slash e.g. ./foo.txt
+* \%T - writes to temp directory
+* \%h - writes to home directory
+* \%g - Rotating log generation
+
+*Built in formatters*
+
+* Inherit from formatter class
+* XMLFormatter
+** Root element log
+** each entry goes under named record
+* SimpleFormatter
+** Formats content as simple text
+** Format is customizable
+*** Uses standard formatting notation
+*** You can customize this using
+`java.util.logging.SimpleFormatter.format` \-> pass value
+with Java -D option when run the program (check slides)
+
+*Log Configuration File*
+
+You can create a configuration file for your log system. Using
+configuration file is much simpler.
+
+[,shell]
+----
+java.util.logging.ConsoleHandler.level = ALL
+...
+(check slide)
+----
+
+then when you launch the program launch with giving file details
+
+[source,shell]
+----
+java -Djava.util.logging.config.file = log.properties com.pluralsight.training.Main // (the last one is is the app name com.plu....)
+----
+
+*Logger Naming*
+
+* Implies a parent child relationship based on the name we give the
+loggers.
+* Naming should be hierarchical
+* dot seperates a level
+* generally tied to class's full name e.g. =com.sethirajat.training=
+`com.sethirajat.training.Main` `com.sethirajat.training.Student`.
+ ** In the above case Main and Student will auto become child
+loggers of `com.sethirajat.training` and any log on the child
+will be logged on the parent also.
+
+Making the most of hierarchical system
+
+* If a logger level is null it inherits parents level
+* So we primarily set level on parents (and is usually restrictive)
+* if we need more detail then we can set more detailed level on the
+child logger
+* each logger also does not need to have a handler
+ ** if there is no handler it still passes the info up to its parent
+which will log it
+ ** if needed we can add handler to child and start logging at that
+level as well. (check slide as to how its usually set up)
+
+[source,java]
+----
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.util.logging.*;
+
+public class LogDemo {
+
+    static Logger logger = LogManager.getLogManager().getLogger(Logger.GLOBAL_LOGGER_NAME);  // static reference to a logger and it can now be used anywhere inside the application
+
+    public static void main(String[] args) {
+        logManagerDemo();
+    }
+
+    static void logManagerDemo(){
+        logger.log(Level.INFO, "My first log message");
+        logger.log(Level.INFO, "Another message");
+    }
+
+
+    // logp allows you to specify the class and method explicityly. log infers it.
+    static void logpDemo(){
+        logger.logp(Level.ALL, "LogDemo", "logpDemo", "Log message");  // logp supports parameters
+    }
+
+
+    // this method demostrates how you can piece the components of the logger yourself.
+    // There are 3 components 1) Logger 2) Handler 3) Formatter
+    // You can arrange them as shown below (check slides for diagram)
+    static void logComponentsDemo(){
+        Logger customLogger = Logger.getLogger("com.sethirajat");  // if this logger does not exist it will be created
+        Handler h = new ConsoleHandler();  // using a built in handler which outputs to console.
+        Formatter f = new SimpleFormatter(); // using a built in formatter
+        h.setFormatter(f);
+        customLogger.addHandler(h);
+        customLogger.setLevel(Level.ALL);
+        customLogger.log(Level.INFO, "We are logging this message");
+    }
+
+
+    // this method demonstrates how you can log to a file
+    static void FileHandlerDemo() throws IOException {
+        Logger customLogger = Logger.getLogger("com.sethirajat");
+        FileHandler h = new FileHandler();  // also can do new FileHandler("%h/myapp_%g.log", 1000, 4) --> pattern for
+                                            // file naming, limit, count (check official documentation by going to class or java docs.
+        h.setFormatter(new SimpleFormatter());
+        customLogger.addHandler(h);
+
+        customLogger.log(Level.INFO, "logging");
+
+    }
+
+}
+----
+
+
+== Multi-threading and concurrency
+
+What is a process
+
+* instance of a program or application
+* has resources such as memory
+* has at least 1 thread
+
+What is a thread
+
+* It is a sequence of programmed instructions.
+* The thing that executes programs code
+* utilizes process resources.
+
+*Example problem that would benefit from multithreading*
+
+An `Adder` class takes in file with numbers and outputs the total in another file.
+
+In a loop we have 6 input files and the work is done sequentially. Since reading from file and writing from file is non cpu task the cpu is idle. so we can do this problem with multithreading approach.
+
+*Move to multithreading*
+
+Its a explicit choice. you need to break the problem into parts and hand
+it off for processing.
+
+Java provides high level and low level api's for this.
+
+Runtime Info & Reflection
+
+Reflection provdies
+
+* Ability to examine types at runtime
+* Dynamically execute & access members
+
+Using reflection
+
+* can fully examine objects at runtime
+* interfaces implemented
+* members
+
+variety of uses
+
+* determine a types capability
+* tools development
+ ** type inspector/browser
+ ** Schema generation
+* construct instances
+* access fields
+* call methods
+
+Each type has a `Class` class instance. It describes the type in detail.

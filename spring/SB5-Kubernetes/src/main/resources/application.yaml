@@ -1,0 +1,10 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/projects?currentSchema=movie
+    username: postgres
+    password: postgres
+
+website_name: ${website_name} # Comes from env variable or container or kubernetes config map

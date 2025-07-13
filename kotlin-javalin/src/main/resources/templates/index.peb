@@ -1,0 +1,25 @@
+{# @pebvariable name="user" type="scratch.User" #}
+<!DOCTYPE html>
+<html lang="EN">
+<head>
+    <title>Page Title</title>
+</head>
+<body>
+
+<h1>This is a Heading</h1>
+<p>This is a paragraph.</p>
+<div>
+    <div>
+        sladfjas
+    </div>
+</div>
+
+    {{ user }} {{ user }}
+
+<div id="content">
+        {% block content %}Fragment{% endblock %}
+</div>
+</body>
+</html>
+
+

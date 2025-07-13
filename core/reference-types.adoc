@@ -1,0 +1,17 @@
+__Strong references__
+
+By default when you create any object of type it is strongly referenced.
+
+
+
+__Weak references__
+
+You can encapsulate an object into a weak reference. When the object is `nulled` it can still be accessible via its weak reference until the garbage collection happens.
+
+
+__Soft references__
+
+ When a soft reference encapsulates an object, these objects (even when `nulled`) are kept in memory and only deleted once JVM realizes that it is going to run out of memory. (Running gc does not delete soft references but only deletes weak references) Thus it deletes this and seeks to free any memory saving out of memory error.
+
+
+__Phantom references__

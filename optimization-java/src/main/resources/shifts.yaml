@@ -1,0 +1,21 @@
+- id: 1
+  group: 1
+  startTime: 11:00
+  endTime: 19:00
+  level : MANAGER
+  latitude: 1.0
+  longitude: 1.0
+- id: 2
+  group: 1
+  startTime: 09:00
+  endTime: 15:00
+  level : EMPLOYEE
+  latitude: 1.0
+  longitude: 1.0
+- id: 3
+  group: 1
+  startTime: 14:00
+  endTime: 22:00
+  level : EMPLOYEE
+  latitude: 1.0
+  longitude: 1.0

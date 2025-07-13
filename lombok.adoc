@@ -1,0 +1,18 @@
+= Lombok
+
+== Links
+
+- [Lombok Features](https://projectlombok.org/features/all)
+- [Lombok Plugins like @Slf4j](https://projectlombok.org/api/index.html)
+
+== Important Annotations
+
+- `@Data` - A shortcut for @ToString, @EqualsAndHashCode, @Getter on all fields, and @Setter on all non-final fields, and @RequiredArgsConstructor!
+- `@Getter/@Setter`
+- `@NoArgsConstructor` - if there are no final fields, if you wish to set all final fields to 0/null/false then use `@NoArgsConstructor(force = true)`
+- `@AllArgsConstructor` - one argument for every field
+- `@RequiredArgsConstructor` - one argument for every non initialized final field or any marked as @NonNull
+- `@NonNull` - stop worrying about null pointer exception
+- `@Value` - immutable class
+- `@Accessors` - `person.age` instead of `person.getAge()` - For more details on fluent and chain refer [here](https://www.baeldung.com/lombok-accessors)
+

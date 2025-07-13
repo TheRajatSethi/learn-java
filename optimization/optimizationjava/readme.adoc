@@ -1,0 +1,41 @@
+== Important Data
+
+=== Employee
+
+* Personal Details
+* Vacation
+* Day Preference
+* Shift Preference
+* Skills
+* Role
+* Salary
+* Max days work
+** In a week
+** In a month
+** In a continuous
+* Days off
+** In a week
+** In a month
+** In a continuous
+* Manager / Lead / Supervisor
+
+=== TimeSheet
+
+* Employee
+* Due Date
+* Submitted Date
+* Hour
+* TimeSheet Item details
+** Date
+** Start Time
+** End Time
+** Hours
+* Approved
+
+=== Company
+
+* Details
+* Locations
+* Admin
+* Billing
+* Employees

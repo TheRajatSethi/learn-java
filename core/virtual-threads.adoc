@@ -1,0 +1,8 @@
+= Virtual Threads
+
+#TODO
+
+== Warning
+The following are regarded as non blocking inside virtual thread execution. Thus if this is happening and Virtual Thread is waiting for the below to happen it will still continue to execute in the physical thread. This pin the VT to PT.
+- Synchronized block
+- JNI native call

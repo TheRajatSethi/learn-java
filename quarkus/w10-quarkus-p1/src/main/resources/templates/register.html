@@ -1,0 +1,18 @@
+{#include base}
+{#title}Register{/title}
+<div>
+    <form hx-post="/register" hx-target="#message-div" hx-swap="innerHtml">
+        <h4>Register</h4>
+        <input type="email" name="email" placeholder="email" required>
+        <input type="text" name="name" placeholder="name" required>
+        <input type="password" name="password" placeholder="password" required minlength="8">
+        <button type="submit">SignUp</button>
+    </form>
+    <div id="message-div">
+
+    </div>
+
+
+</div>
+{/include}
+

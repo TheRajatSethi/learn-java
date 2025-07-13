@@ -1,0 +1,94 @@
+:toc: left
+
+= Jackson
+
+== `@JsonProperty`
+
+
+Java field name exposed as some other name.
+
+[source,java]
+----
+@JsonProperty("stated-income")
+private double statedIncome;
+----
+
+Access Levels
+- READ_ONLY - Property may only be read for serialization
+- WRITE_ONLY - Property may only be written (set) as part of deserialization
+
+There are other options such as 
+- required
+- default value
+
+== `@JsonIgnore`
+
+Field is left out of serialization and deserialization.
+
+With `@JsonIgnoreProperties` you can ignore multiple. (Set at class level) e.g. `@JsonIgnoreProperties({"secretField1", "secretField2"})`
+
+== `@JsonPropertyOrder`
+
+You can set the order serialized fields. (Set at class level)
+
+`@JsonPropertyOrder({"field1", "field2"})`
+
+== `@JsonRawValue`
+
+If you have a raw text (as String) e.g. `{"sample" : "text", "people" : "yes"}` if you add that above the field it will serialize this as an object.
+
+== `@JsonInclude`
+
+Filters out which attribute should not be sent e.g. Can be used to filter out values which are null.
+
+`@JsonIncude(value = JsonInclude.Include.NON_EMPTY)`
+
+There are other filters too. Check out the interface `@interface JsonInclude` to learn more.
+
+== `@JsonValue`
+
+Helps you accept enum values.
+
+== `@JsonEnumDefaultValue`
+
+Sets a default enum value. For this you also need to enable it in `application.yml` or `application.properties`
+
+[source,yml]
+----
+spring:
+  jackson:
+    deserialization:
+      read-unknown-enum-values-using-default-value: true
+----
+
+== `@JsonCreator`
+
+Marker annotation that can be used to define constructors and factory methods as one to use for instantiating new instances of the associated class.
+
+Note :- Not sure if its used in most of the cases though. If you vary from the default then you may need it.
+
+== `@JsonTypeInfo` `@JsonSubType`
+
+With these you can introduce polymorphic behaviour at deserialization itself.
+
+Lets say you have an inbound req which can have either bus or car or bike, not 2 only 1 of those.
+
+[source,json]
+----
+{
+    "name" : "automobile",
+    "bus" : {},
+    "car" : {},
+    "bike" : {}
+}
+----
+
+What you can do is create a Vehicle class and based on the json attribute instanciate class bus or car or bike.
+
+Refer to https://www.youtube.com/watch?v=IlLC3Yetil0&list=PLO0KWyajXMh5n1_N5z1i1Y-6v8j2vfRXL&index=8[here] for an example.
+
+== `@JsonGetter` `@JsonSetter`
+
+== `@JsonFormat`
+
+Allows you to customize formats of fields such as date etc...

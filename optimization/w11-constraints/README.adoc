@@ -1,0 +1,14 @@
+== Annotations
+
+
+The below two go on the Bean which is to be planned.
+- `@PlanningId`
+- `@PlanningVariable`
+
+
+
+The below go on the encapsulating class which will contain the list of objects which are planned.
+`@PlanningSolution`
+`@ValueRangeProvider`
+`@ProblemFactCollectionProperty`
+`@PlanningScore`

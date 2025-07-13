@@ -1,0 +1,69 @@
+:toc: left
+
+= Records
+
+== Basics
+
+- JEP-395](https://oRecords were added to java in Java-16. [penjdk.org/jeps/395)
+- [Serialization](https://blogs.oracle.com/javamagazine/post/simpler-object-and-data-serialization-using-java-records#:~:text=Serialization%20with%20records,Serializable%20.&text=However%2C%20under%20the%20hood%2C%20Java,instance%20of%20a%20normal%20class.)
+
+
+Records are Java's answer for dataclasses. If you just wish to represent data work with records. They have a small syntax such as `record Point(int x, int y){}` and they provide the following automatically the following functions
+
+- toString
+- hashCode
+- equals
+- getter
+- constructor
+
+However, the default implementation can be overridden. Records are immutable thus no setters are generated all variables are final. Records cannot inherit and cannot be inherited by. Interfaces can be implemented though.
+
+[,java]
+----
+include::Record1.java[]
+----
+
+== Compact Constructors
+
+Records can have compact constructors. Here x and y are already assigned to this.x and this.y just additional validation is run.
+
+[,java]
+----
+include::Record2.java[]
+----
+
+== Annotations
+
+Records can accept annotations just as any other class variables in Java. In this example javax annotation is used for bean validation.
+
+[,java]
+----
+include::Record3.java[]
+----
+
+== Implementing interfaces
+
+In this below example record implements `Runnable` interface and runs in a different thread.
+
+[,java]
+----
+include::Record4.java[]
+----
+
+== Pattern matching
+
+Records are a great candidate for pattern matching. They can even be deconstructed into different variables for condition matching Very similar to rust's pattern matching.
+
+[,java]
+----
+include::Record5.java[]
+----
+
+== Serialization
+
+Record Serialization There is no customization allowed on record serialization. The deserialization just calls the canonical constructor. It's fast.
+
+[,java]
+----
+include::Record6.java[]
+----

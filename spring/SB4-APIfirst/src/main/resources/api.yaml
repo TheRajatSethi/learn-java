@@ -1,0 +1,39 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Petstore
+  license:
+    name: MIT
+servers:
+  - url: http://petstore.swagger.io/v1
+paths:
+  /pets:
+    post:
+      summary: Add a new pet
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '201':
+          description: Created
+
+
+components:
+  schemas:
+    Pet:
+      title: A Slack message
+      type: object
+      properties:
+        text:
+          type: string
+          description: Message text
+        text1:
+          type: array
+          items:
+            type: string
+          minItems: 10
+          maxItems: 20

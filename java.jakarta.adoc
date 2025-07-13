@@ -1,0 +1,45 @@
+= Jakarta
+
+Allows the ability to run large scale business applications on top of Java EE Web servers such as Glassfish, JBoss (Wildfly) etc...
+
+Java EE is a combination of many API's which allow you to build enterprise grade applications such as ...
+
+. Java Transaction API (JTA)
+. Java Messaging Service (JMS)
+. Java Persistance API (JPA)
+. Enterprise Java Beans (EJB)
+. Java Server Faces (JSF)
+. Unified Expression Language (EL)
+. Restfull Web Services (JAX.RS)
+. JSON Processing (JSON.P)
+. JSON Binding (JSON.B)
+. Web Sockets
+. Java EE Security
+. Servlets
+. Context Dependency Injection (CDI)
+. Java Mail
+. Bean Validation
+. Interceptors
+. Batch Processing
+. Java Standard Tag Library
+
+'''
+
+Some important libraries from Java SE play impotant role in Java EE
+
+. JDBC
+. Java Naming and Directory Interface (JNDI)
+. Java API for XML processing (JAXP)
+. Streaming API for XML (StAX)
+. Java XML Binding (JAXB)
+. XML Web Services (JAX.WS)
+. JMX
+
+'''
+
+For any feature to be a part of Jakarta EE it needs 3 things
+
+. Specification e.g. JAX.RS
+. Implementation of that specification e.g. for JAX.RS you have RESTeasy
+. TCK . Technology compatability Kit is a suite of tests that at least nominally checks a particular alleged implementation of a Java Specification Request (JSR) for compliance.
+

@@ -1,0 +1,19 @@
+### 
+POST http://localhost:8080/signup HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+email=sam1@gmail.com
+&password1=12
+&password2=12
+
+
+###
+
+POST http://localhost:8080/signup HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+email=sam@dgsafdddafmail.com
+&password1=12
+&password2=12
+
+

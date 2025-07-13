@@ -1,0 +1,1286 @@
+:toc: left
+
+= Collections
+
+== Problems with arrays
+
+- Cannot resize
+- Very low level concept
+- Do not provide many functionality like add, duplicate check etc...
+
+With below example I try to show the problems with arrays. let's say we have a simple class Product & we are doing some operations on it in the main program below
+
+[source,java]
+----
+package ca.rajatsethi.programming;
+
+public class Product {
+    private String name;
+    private int price;
+
+    public Product(String name, int price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" + this.name + "," + this.price + "}";
+    }
+}
+----
+
+[source,java]
+----
+// main.java
+package ca.rajatsethi.programming;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Product door = new Product("Wooden Door", 35);
+        Product window = new Product("Wooden Window", 15);
+
+        Product[] products = {door, window};
+        System.out.println(Arrays.toString(products));  // print out in human legible format.
+        // https://docs.oracle.com/javase/9/docs/api/java/util/Arrays.html#toString-java.lang.Object:A-
+
+        // just to add we have to implement another function as arrays do not resize.
+        Product handle = new Product("Handle", 4);
+        products = add(products, handle);
+
+        // arrays also do not check for duplicate, you can add handle again.
+        products = add(products, handle);
+        System.out.println(Arrays.toString(products));
+
+    }
+
+    // we wish to add another product to the products array. The problem is that the array cannot be resized.
+    // so lets create another method which adds functionality to add another product to the array.
+
+    public static Product[] add(Product[] array, Product product){
+        int length = array.length;
+        Product[] newArray = Arrays.copyOf(array, length+1);
+        newArray[length] = product;
+        return newArray;
+    }
+}
+----
+
+[source,java]
+----
+// Console output
+[Product{Wooden Door,35}, Product{Wooden Window,15}]
+[Product{Wooden Door,35}, Product{Wooden Window,15}, Product{Handle,4}, Product{Handle,4}]
+----
+
+'''
+
+**Java Collections**
+
+-   Java collections ships with the JDK
+-   Any application in Java (which is not very basic) will use the
+    collections frameworks.
+-   The data structures are diverse
+
+    -   Some of them provide ordered access.
+    -   Some of them provide uniqueness.
+    -   Some of them provide ability for pairs.
+
+== Defining collections
+
+**Collection of Collections**
+
+All the java interfaces which deal with collections extend the
+`Collection`.
+
+Types of collections
+
+-   Lists (Array list and linked list)
+-   Sets (Hash Set)
+
+    -   Sorted Set (Tree set)
+
+-   Queue (Priority queue) and Deque or double ended queue (Linked list
+    and Array Deque)
+-   Map (Hash map) and Sorted Map (Treemap)
+
+Lists is interface its implementation is array list and linked list.
+Same as others. Outside brackets --\> interfaces, inside brackets --\>
+their specific implementations. The interface will drive their
+charactersistics, but for 1 interface there can be multiple
+implementations e.g. for list we have 2.
+
+'''
+
+**Collection Behaviour**
+
+-   All collections extend the `iterable` interface.
+
+Some of the other methods in the collection interface are shown below.
+
+-   size()
+-   isEmpty()
+-   add(element)
+-   addAll(collection)
+-   remove(element)
+-   removeAll(collection)
+-   retainall(collection)
+-   contains(element)
+-   containsAll(collection)
+-   clear()
+
+Example of working with collections (in this case we are using
+`ArrayList` ) is given below.
+
+[source,java]
+----
+// Product.java
+public class Product {
+    private String name;
+    private int price;
+
+    public Product(String name, int price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" + this.name + "," + this.price + "}";
+    }
+
+    public int getPrice() {
+        return price;
+    }
+}
+----
+
+[source,java]
+----
+// main.java
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Product door = new Product("Door", 15);
+        Product floorPannel = new Product("Floor Pannel", 60);
+        Product window = new Product("Window", 30);
+
+        Collection<Product> products = new ArrayList<>(); // creating a collection of products <T> -> <Product>
+
+        // now that our collection is created we can add our products to the `products` collection.
+        products.add(door);
+        products.add(floorPannel);
+        products.add(window);
+
+        // printing out the whole collection
+        System.out.println(products);
+
+
+        // iterating on collection using for loop.
+        for(Product product: products){
+            System.out.println(product);
+        }
+
+
+        // iterating on collection the long way.
+        // this way is useful if you wish to modify the collection while looping on it
+        // e.g. if you wish to remove product from the products collection while looping on it as shown below.
+        final Iterator<Product> productIterator = products.iterator();
+        while(productIterator.hasNext()){
+            Product product = productIterator.next();
+            if (product.getPrice() > 20) {
+                System.out.println(product);
+            }
+            else{
+                productIterator.remove();  // if price is less than that then remove from the collection.
+            }
+        }
+        // printing out the whole collection to confirm its removed.
+        System.out.println(products);
+
+        // trying other methods
+        System.out.println("Is collection empty : " + products.isEmpty());
+        System.out.println("Collection size : " + products.size());
+        System.out.println("Contains floorPannel : " + products.contains(floorPannel));
+
+    }
+}
+----
+
+== Lists
+
+There are 2 types of lists.
+
+-   Arraylist
+-   Linked List
+
+In the example below we are using ArrayList and wrapping it in out
+Shipment class which represents something in our domain. (This is a
+common practice). The shipment class will have functions which make
+sense in the real world and in the background it will use Arraylist.
+
+[source,java]
+----
+// Product.Java
+package ca.rajatsethi.programming;
+
+import java.util.Comparator;
+
+public class Product{
+    // Attributes of the Product Class
+    private String name;
+    private int weight;
+
+    // Constructor
+    public Product(String name, int weight) {
+        this.name = name;
+        this.weight = weight;
+    }
+
+    // Getters
+    public int getWeight() {
+        return weight;
+    }
+
+    // String representation of product
+    @Override
+    public String toString() {
+        return "Product{ " +
+                this.name
+                + " , "
+                + this.weight
+                + "}";
+    }
+
+    // implementing the comparator
+    public static final Comparator<Product> BY_WEIGHT = Comparator.comparing(Product::getWeight);
+
+}
+----
+
+[source,java]
+----
+// Shipment.Java
+package ca.rajatsethi.programming;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class Shipment implements Iterable<Product>{
+
+    private static final int PRODUCT_NOT_PRESENT = -1;
+    private static final int SMALL_VAN_MAX_ITEM_WEIGHT = 20;
+
+    private List<Product> products = new ArrayList<>();  // products arraylist
+    private List<Product> small_van_products = new ArrayList<>();
+    private List<Product> large_van_products = new ArrayList<>();
+
+    // Getters
+    public List<Product> getSmall_van_products() {
+        return small_van_products;
+    }
+
+    public List<Product> getLarge_van_products() {
+        return large_van_products;
+    }
+
+    // Iterator
+    @Override
+    public Iterator<Product> iterator() {
+        return products.iterator();  // uses the built in list iterator.
+    }
+
+    // Adding product
+    public void add(Product p)
+    {
+        products.add(p);
+    }
+
+    // replacing the product
+    public void replace(Product oldProduct, Product newProduct)
+    {
+        int oldProductIndex = products.indexOf(oldProduct);
+        if (oldProductIndex != PRODUCT_NOT_PRESENT)
+        {
+            products.set(oldProductIndex, newProduct);
+        }
+    }
+
+    // Seperating products into different Vans
+    public void prepare()
+    {
+        products.sort(Product.BY_WEIGHT);  // sort by weight ascending.
+        int splitPoint = findSplitPoint();
+        small_van_products = products.subList(0, splitPoint);
+        large_van_products = products.subList(splitPoint, products.size());
+    }
+
+    // Helper product
+    private int findSplitPoint() {
+        for(Product p: products){
+            if (p.getWeight() > SMALL_VAN_MAX_ITEM_WEIGHT){
+                return products.indexOf(p);
+            }
+        }
+        return 0;
+    }
+}
+----
+
+[source,java]
+----
+// main.java
+package ca.rajatsethi.programming;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Shipment ship = new Shipment();
+
+        Product floorPannel = new Product("Floor Pannel", 30);
+        Product window = new Product("Window", 10);
+        Product door = new Product("Door", 45);
+
+        ship.add(floorPannel);
+        ship.add(window);
+        ship.add(door);
+
+        // Because we implemented the iterable on the Product for the
+        // Shipment class we can iterate over it.
+        for(Product p: ship){
+            System.out.println(p);
+        }
+
+        ship.prepare();
+
+        System.out.println("Small Van products = " + ship.getSmall_van_products());
+        System.out.println("Large Van products = " + ship.getLarge_van_products());
+    }
+}
+----
+
+Another example below which shows how to create your own list on top of Array (with creating own version of iteration and not using an existing iterator like ArrayList iterator) capability.
+
+[source,java]
+----
+/*
+Java Iterable and Iterator Example.
+ */
+
+import java.util.Iterator;
+
+class GenericList implements Iterable<Integer>{
+    int[] mylist = new int[10];
+    int position = 0;
+
+    void push(int value){
+        mylist[position++] = value;
+    }
+
+    int pop(){
+        return mylist[--position];
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return new CustomIterator(this);
+    }
+
+    public class CustomIterator implements Iterator<Integer>{
+
+        GenericList list;
+        private int pointer = 0;
+
+        CustomIterator(GenericList list){
+            this.list = list;
+        }
+        @Override
+        public boolean hasNext() {
+            return pointer < list.position;
+        }
+
+        @Override
+        public Integer next() {
+            return list.mylist[pointer++];
+        }
+    }
+}
+
+public class Main10 {
+    public static void main(String[] args) {
+        GenericList lst = new GenericList();
+        lst.push(10);
+        lst.push(20);
+
+        for (int value :lst){
+            System.out.println(value);
+        }
+    }
+}
+----
+
+
+== Sets
+
+There are the following types of set implementations which are avaiable
+to us.
+
+-   HashSet
+-   TreeSet
+-   EnumSet (Designed to be efficient when dealing with enum types)
+
+'''
+
+**Hash Set**
+
+-   These are based on HashMap. (Calls `hashCode()` on element and looks
+    up the location).
+-   Hash Sets are good general purpose implementations.
+-   They resize when run out of space.
+
+*How `equals` works*
+
+Standard java checks the equals using the hash code. If 2 objects
+hashcode value is same then they are equals. i.e. they are the same
+object. Your implementation of equals can differ and you will have to
+override it.
+
+[source,java]
+----
+object.hashCode() == object.hashCode()
+----
+
+**Tree Set**
+
+-   Tree set is based on tree map. Similarly hash set was based on hash
+    map.
+-   Uses sorted binary tree.
+-   It keeps the elements in specified order. (it implements `SortedSet`
+    and `NavigableSet`)
+
+**Enum Set**
+
+-   Only allow to store enum objects.
+-   Uses a bitset based on ordinal of the enum.
+
+Two other interfaces mentioned below which extend the behaviour of Sets.
+They talk about enforcing orders.
+
+-   SortedSet
+-   NavigableSet
+
+*SortedSet*
+
+-   E first()
+-   E last()
+-   SortedSet tailSet(E fromElement)
+-   SortedSet headSet(E toElement)
+-   SortedSet subSet(E fromElement, E toElement)
+
+*NavigableSet* This extends sortedSet and is implemented by Treeset.
+
+-   E lower(E e)
+-   E higher(E e)
+-   E floor(E e)
+-   E cieling(E e)
+-   E pollFirst()
+-   E pollLast()
+
+'''
+
+== Queues Deque and Stacks
+
+**Queue**
+
+-   First In First Out
+
+Methods
+
+-   offer() --\> Use offer method instead of add() when adding to queue.
+    As some of the queues are bounded (max in queue) and if you use
+    add() method to add something to queue when its full it throws an
+    exception. offer() will just return false.
+-   poll() --\> remove and return value. The remove() method throws
+    exception when queue is empty and you wish to remove something so
+    instead of using it use poll() method.
+-   peek() --\> use peek, element() throws exception when empty, peek
+    returns null.
+
+Basic example of Queue provided below. The below queue has been
+implemented using the LinkedList implementation.
+
+[source,java]
+----
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        // Instanciating a new queue of type linked list
+        Queue<Integer> q = new LinkedList<>();
+
+        // adding elements to queue
+        q.add(10);
+        q.add(20);
+
+        // printing out the queue
+        System.out.println(q);
+
+        // get first element
+        System.out.println(q.element());
+        System.out.println(q);
+
+        // iterating over queue
+        for (int i: q ) { System.out.println(i); }
+
+        // remove element from the queue
+        System.out.println("Remove element from queue : " + q.remove());
+        System.out.println(q);
+    }
+}
+----
+
+A more real world example of helpdesk implemented with queue is provided
+below.
+
+[source,java]
+----
+// Category.java
+public enum Category {
+    PRINTER,
+    COMPUTER,
+    PHONE,
+    TABLET
+}
+----
+
+[source,java]
+----
+//Customer.java
+public class Customer
+{
+    private final String name;
+
+    public Customer(String name) {
+        this.name = name;
+    }
+
+    public void reply(final String message)
+    {
+        System.out.println(this.name +" : "+ message);
+    }
+
+    public static final Customer JACK = new Customer("Jack");
+    public static final Customer JILL = new Customer("Jill");
+    public static final Customer MARY = new Customer("Mary");
+}
+----
+
+[source,java]
+----
+// Enquiry.java
+public class Enquiry {
+    private final Customer customer;
+    private final Category category;
+
+    public Enquiry(Customer customer, Category category) {
+        this.customer = customer;
+        this.category = category;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    @Override
+    public String toString() {
+        return "Enquiry{customer = " +
+                customer +
+                ", category = "+
+                category +
+                "}";
+    }
+}
+----
+
+[source,java]
+----
+//Helpdesk.java
+import java.util.ArrayDeque;
+import java.util.Queue;
+
+public class HelpDesk
+{
+
+    private final Queue<Enquiry> enquiries = new ArrayDeque<>();
+
+    public void eqnuire(final Customer customer, Category category)
+    {
+        enquiries.offer(new Enquiry(customer, category));
+    }
+
+    public void processAllEnquiries()
+    {
+        Enquiry enquiry;
+        while ((enquiry = enquiries.poll()) != null)
+        {
+            enquiry.getCustomer().reply("Have you tried turning if off and on again?");
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        HelpDesk helpDesk = new HelpDesk();
+
+        helpDesk.eqnuire(Customer.JACK, Category.PHONE);
+        helpDesk.eqnuire(Customer.JILL, Category.PRINTER);
+
+        helpDesk.processAllEnquiries();
+    }
+}
+----
+
+'''
+
+*Using Priority Queue*
+
+We can actually use priority queue to sort the enquiry using some
+priority. In the `Helpdesk.java` class we will now implement
+priorityQueue.
+
+[source,java]
+----
+
+import java.util.ArrayDeque;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+/**
+ * Created by sethir on 2019/02/01.
+ */
+public class HelpDesk
+{
+
+    private final Queue<Enquiry> enquiries = new PriorityQueue<>(BY_CATEGORY);  // creating a priority queue by using category comparator.
+
+    public void eqnuire(final Customer customer, Category category)
+    {
+        enquiries.offer(new Enquiry(customer, category));
+    }
+
+    public static final Comparator<Enquiry> BY_CATEGORY = new Comparator<Enquiry>() {  // implementing comparator.
+        @Override
+        public int compare(Enquiry o1, Enquiry o2) {
+            return o1.getCategory().compareTo(o2.getCategory());
+        }
+    };
+
+    public void processAllEnquiries()
+    {
+        Enquiry enquiry;
+        while ((enquiry = enquiries.poll()) != null)
+        {
+            enquiry.getCustomer().reply("Have you tried turning if off and on again?");
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        HelpDesk helpDesk = new HelpDesk();
+
+        helpDesk.eqnuire(Customer.JACK, Category.TABLET);
+        helpDesk.eqnuire(Customer.JILL, Category.PRINTER);
+        helpDesk.eqnuire(Customer.MARY, Category.PHONE);
+
+        helpDesk.processAllEnquiries();
+    }
+}
+----
+
+The result is sorted based on the enum ordering.
+
+[source,shell]
+----
+// output
+Jill : Have you tried turning if off and on again?
+Mary : Have you tried turning if off and on again?
+Jack : Have you tried turning if off and on again?
+----
+
+'''
+
+**Stack and Deque**
+
+Stacks are `Last In - First Out`
+
+Java.util.stack is deprecated and should not be used. You should be
+using Deque, they are the correct way to use stacks. Deque (double ended
+queue) --\> Use 2 ends.
+
+Below are the methods which we can use for Deque to implement stack.
+
+-   boolean offerFirst(E e)
+-   boolean offerLast(E e)
+-   void addFirst(E e)
+-   void addLast(E e)
+-   E removeFirst()
+-   E removeLast()
+-   E pollFirst()
+-   E pollLast()
+-   E getFirst()
+-   E getLast()
+-   E peekFirst()
+-   E peekLast()
+
+If the above methods are confuing .
+
+-   void Push(E e)
+-   void pop()
+
+Example of Calculator provided below.
+
+[source,java]
+----
+// Calculator.Java
+package ca.rajatsethi.programming;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+public class Calculator {
+
+    public int evaluate(final String input)
+    {
+        final Deque<String> stack = new ArrayDeque<>();
+
+        final String[] tokens = input.split(" ");
+
+        for(String token: tokens)
+        {
+            stack.push(token);
+        }
+
+        while (stack.size() > 1)
+        {
+            int left = Integer.parseInt(stack.pop());
+            String operator = stack.pop();
+            int right = Integer.parseInt(stack.pop());
+
+            int result = 0;
+
+            switch (operator)
+            {
+                case "+":
+                    result = left + right;
+                    break;
+                case "-":
+                    result = left - right;
+                    break;
+            }
+            stack.push(String.valueOf(result));
+        }
+
+        return Integer.parseInt(stack.pop());
+
+    }
+}
+----
+
+[source,java]
+----
+// Main.java
+package ca.rajatsethi.programming;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Calculator calculator = new Calculator();
+
+        System.out.println(calculator.evaluate("1 + 2"));
+        System.out.println(calculator.evaluate("1 + 2 - 11 - 12 - 18 + 109"));
+        System.out.println(calculator.evaluate("1 + 6"));
+    }
+}
+----
+
+[source,shell]
+----
+// output
+3
+103
+7
+----
+
+== Maps
+
+Maps are key value pairs like dictionaries in Python. A quick example
+with maps is given below.
+
+[source,java]
+----
+// product.java
+
+package ca.rajatsethi.programming;
+
+import java.util.Comparator;
+
+public class Product {
+    private int id;
+    private String name;
+    private int weight;
+
+    public Product(int id, String name, int weight) {
+        this.id = id;
+        this.name = name;
+        this.weight = weight;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    // Implementing comparator
+    public static final Comparator<Product> BY_WEIGHT = Comparator.comparing(Product::getWeight);
+    public static final Comparator<Product> BY_NAME = Comparator.comparing(Product::getName);
+}
+----
+
+[source,java]
+----
+// ProductLookupTable.java --> Interface
+package ca.rajatsethi.programming;
+
+public interface ProductLookupTable {
+
+    Product lookupByID(int id);
+    void addProduct(Product productToAdd);
+    void clear();
+
+}
+----
+
+We first see how we do things without a map. The below is using lists.
+
+[source,java]
+----
+// NaiveProductLookupTable.Java
+
+package ca.rajatsethi.programming;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class NaiveProductLookupTable implements ProductLookupTable{
+
+    private List<Product> products = new ArrayList<>();
+
+    @Override
+    public Product lookupByID(int id) {
+        for (Product product : products){
+            if (product.getId() == id){
+                return product;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void addProduct(Product productToAdd) {
+        for (Product product : products){
+            if (product.getId() == productToAdd.getId()){
+                throw new IllegalArgumentException("Unable to add : duplicate id : "
+                        + product.getId());  // throwing exception because we found a duplicate id
+            }
+        }
+        products.add(productToAdd);
+    }
+
+    @Override
+    public void clear() {
+        products.clear();
+    }
+}
+----
+
+Now that we have seen list, we do the same using maps below. The code is
+cleaner and performs much better.
+
+[source,java]
+----
+// MapProductLookupTable.Java
+
+package ca.rajatsethi.programming;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class MapProductLookupTable implements ProductLookupTable{
+
+    private final Map<Integer, Product> products = new HashMap<>();
+
+    @Override
+    public Product lookupByID(int id) {
+        return products.get(id);
+    }
+
+    @Override
+    public void addProduct(Product productToAdd) {
+        if (products.containsKey(productToAdd.getId())){
+            throw new IllegalArgumentException("Unable to add product, id already exists : " + productToAdd.getId());
+        }
+        products.put(productToAdd.getId(), productToAdd);
+    }
+
+    @Override
+    public void clear() {
+        products.clear();
+    }
+}
+----
+
+Methods for Maps
+
+-   put(K key, V value) --\> if you add some key which is already there,
+    it will update the existing value.
+-   putAll(Map\<\>)
+-   get(Object key)
+-   boolean containsKey(key)
+-   booleans containsValue(value)
+-   remove(key)
+-   clear()
+-   int size()
+-   boolean isEmpty()
+
+!!!note Map is the only collections that don\'t extend or implement the
+Collection interface.
+
+'''
+
+**Views Over Maps**
+
+Similar to lists which have views over them i.e. created by `subList`.
+Even maps have views. The methods are given below.
+
+-   keySet()
+-   values()
+-   entrySet()
+
+The above methods are demonstrated in the below program.
+
+[source,java]
+----
+//  ViewsOverMaps.java
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+public class ViewsOverMaps {
+   public static void main(String[] args) {
+       final Map<Integer, Product> products = new HashMap<>();
+
+       products.put(1, new Product(1, "Door", 35));
+       products.put(2, new Product(2, "Window", 55));
+       products.put(3, new Product(3, "Frame", 75));
+
+       System.out.println(products);
+       System.out.println();
+
+       Set<Integer> ids = products.keySet();
+       System.out.println(ids);
+       System.out.println();
+
+       // if you remove something from this set of ids now it also gets removed from the products map
+       ids.remove(1);
+       System.out.println(ids);
+       System.out.println(products);
+       System.out.println();
+
+
+       // values()
+       Collection<Product> values = products.values();
+       System.out.println(values);
+       System.out.println();
+
+       Set<Map.Entry<Integer, Product>> entries = products.entrySet();
+       System.out.println(entries);
+       System.out.println();
+       for (Map.Entry<Integer, Product> entry : entries){
+           System.out.println(entry);
+           if (entry.getKey() == 2){
+               entry.setValue(new Product(entry.getKey(), "Pipe", 10));  // you can update the value for the entry
+           }
+       }
+       System.out.println(entries);
+       System.out.println();
+
+   }
+}
+----
+
+'''
+
+**Sorted and Navigable Maps**
+
+-   SortedMap is supersceded by NavigableMap
+
+These will enforce order (usually by key in ascending order). Some of
+the methods of SortedMap are provided below : -
+
+-   firstKey()
+-   lastKey()
+
+This also has views over the Map
+
+-   tailMap(key)
+-   headMap(key)
+-   subMap(from key, to key)
+
+The key should be comparable or we need to provide a comparator.
+
+'''
+
+The NavigableMap add more features to sorted map.
+
+-   firstEntry()
+-   lastEntry()
+-   pollFirstEntry() --\> removes and returns the first entry
+-   pollLastEntry() --\> removes the last entry
+-   lowerEntry()
+-   higherEntry()
+-   lowerKey()
+-   higherKey()
+-   floorEntry(k) --\> previous entry
+-   ceilingEntry(k) --\> next entry for the provided key
+-   floorKey(k)
+-   ceilingKey(k)
+
+There are a lot of methods which were added by Java-8 to the Maps for
+ease of use. Below is examples of how to use them.
+
+[source,java]
+----
+// Java8Enhacements.Java
+package ca.rajatsethi.programming;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Java8Enhacements {
+    public static void main(String[] args) {
+        final Map<Integer, Product> products = new HashMap<>();
+
+        products.put(1, new Product(1, "Door", 20));
+        products.put(2, new Product(2, "Window", 25));
+        products.put(3, new Product(3, "Frame", 30));
+
+
+        Product defualtProduct = new Product(-1, "Default", 0);
+
+        // getOrDefault --> If something is not there in the map it will get you default value.
+        System.out.println(products.getOrDefault(10, defualtProduct));
+
+        // replace
+        System.out.println(products.replace(1, new Product(1, "Big Door", 50)));
+
+        // replaceAll --> with new products of weight 10
+        products.replaceAll((id, oldProduct) ->
+            new Product(id, oldProduct.getName(), oldProduct.getWeight() + 10)
+        );
+        System.out.println(products);
+
+        //computeIfAbsent  -> creates new entry in map if the key is missing.
+        Product result = products.computeIfAbsent(10, (id) -> new Product(id, "Custom Product", 25));
+        System.out.println(result);
+        System.out.println(products);
+
+
+        // with java-8 you can loop on the map itself using lambda expressions
+        products.forEach((key, value) ->
+        {
+            System.out.println(key + " -> " + value);
+        });
+
+    }
+}
+----
+
+'''
+
+There are 3 general purpose maps
+
+-   HashMap
+-   LinkedHashMap
+-   TreeMap --\> kind of balanced binary tree and is using red-black
+    tree under the hood.
+
+There are 3 special purpose maps
+
+-   x
+-   x
+-   x
+
+*HashMap*
+
+-   General purpose
+-   Uses the .hashcode()
+
+'''
+
+== Collections Operations
+
+This section contains details about the common operations provided by
+the Java collections class across all data structure types.
+
+**Algorithms**
+
+-   rotate()
+-   shuffle() -\> rearrange randomly
+-   sort()
+
+'''
+
+**Factories**
+
+These are static methods on the collections class which will create a
+collection with some properties.
+
+*Singletons*
+
+-   singleton --\> only contain single value. They are immutable.
+
+*Empty Collections*
+
+-   return immutable empty set, or list or map
+-   e.g. =Collections.emptySet(0)= or `Collections.emptyList()`
+
+These empty collections are useful when you want to pass no values to a
+method which takes in a collection.
+
+*Unmodifyable collections*
+
+Lets consider a code where we have a list. It returns the shopping list
+but then someone from the main function adds something to it thus
+modifying the shopping list as shown below.
+
+[source,java]
+----
+package ca.rajatsethi.programming;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ShoppingBasket {
+
+    private final List<Product> products = new ArrayList<>();
+    private int total_weight = 0;
+
+    public void add(Product product){
+        products.add(product);
+        total_weight += product.getWeight();
+    }
+
+    public List<Product> getItems(){
+        return products;
+    }
+
+    @Override
+    public String toString() {
+        return "Shopping basket of " + products + "with weight of " + total_weight + " kg";
+    }
+
+    public static void main(String[] args) {
+        ShoppingBasket s1 = new ShoppingBasket();
+        s1.add(new Product(1, "Apple", 10));
+
+        System.out.println(s1);
+
+        s1.getItems().add(new Product(2, "Banana", 2));
+        System.out.println(s1);
+    }
+}
+----
+
+You will see that because the item is added in the main function the
+weight is not updated.
+
+[source,shell]
+----
+//output
+Shopping basket of [{ 1, Apple, 10 }]with weight of 10 kg
+Shopping basket of [{ 1, Apple, 10 }, { 2, Banana, 2 }] with weight of 10 kg
+----
+
+In this case its better to return a collection which is unmodifyable. So
+that no one can add to the list in the main funciton.
+
+[source,java]
+----
+public List<Product> getItems(){
+    return Collections.unmodifiableList(products);
+}
+----
+
+
+**Utility Methods of Collection Methods**
+
+Instead of adding products one by one you should use the below : -
+
+[source,java]
+----
+Collections.addAll(products, door, window, frame);
+----
+
+-   Collections.min()
+-   Collections.max()
+
+
+== Misc
+
+**Converting between collections and arrays**
+
+Sometimes you need to convert collection to array. Use `toArray()`
+method. If you do not provide any parameters it will return an array of
+type `object`. Another version of the `toArray(T[] array)` accepts an
+array of type specified, this will return the type which you specified.
+
+Arrays can also be retrived as collection. Use Array class `asList`
+method.
+
+[source,java]
+----
+// Collection to array
+Myclass[] a1 = list.toArray(new MyClass[0]);
+----
+
+[source,java]
+----
+// Array to collection
+Collection<MyClass> list = Arrays.asList(myArray);
+----

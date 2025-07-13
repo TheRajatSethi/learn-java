@@ -1,0 +1,193 @@
+:toc: left
+
+= JPA and Hibernate
+
+This repository contains details about JPA and Hibernate.
+
+== Setup
+
+Quick note about setup.
+- Spring and Spring Data JPA
+- H2 Database
+- Console url : localhost:8080/h2/
+- Database url : jdbc:h2:mem:memDb
+
+The below config will enable h2 in memory. It can also be enabled to store contents/data in a file if required.
+
+[source,properties,linenums]
+----
+include::./src/main/resources/application.properties[]
+----
+
+== Overview
+
+=== Java/Jakarta Persistence Api
+
+JPA - Java/Jakarta persistence api is specification provided by java to persist data in a relational database. [Link for official docs.](https://jakarta.ee/specifications/persistence/). It is considered as a standard approach for Object Relational Mapping.
+
+JPA is just a specification. (The Latest version at this time is 3.x but SB is still using JPA version 2.2.x)
+
+There are many implementations of JPA. Hibernate is one of them.
+
+Use Case :- Consider that there was no standard specification provided by Java/Jakarta to connect Java objects to databases. Each ORM library would have its own way to annotate (`@Entity` etc...) and there would be no standardization.
+
+=== Hibernate
+
+https://hibernate.org/[Hibernate] provides ORM (in addition to other things) which follows JPA specification and enables data to be stored, queried, modified etc... in relational databases. It's pretty much the standard in most CRUD apps.
+
+Hibernate also has its own annotations however the hibernate team recommends to use JPA annotations as it is the standard.
+
+**Note About JOOQ**
+
+Hibernate seems to be great for CRUD apps but in case you app supports analytical queries as well. (Large or complex SQL queries and support for stored procedures and such advanced constructs you can check out JOOQ).
+JOOQ is supposed to be SQL centric rather than Java Centric.
+
+=== Spring Data
+
+https://spring.io/projects/spring-data[It] is an umbrella project for making working with data easier.
+
+- Spring data JPA
+- Spring data Key/Value
+- Spring data MongoDb
+- Spring data Redis
+- Spring data Cassandra
+- ...
+
+=== Spring data JPA
+
+Spring data JPA is a child project of Spring Data. 
+
+Note :- Hibernate is an ORM and does not always need Spring Data JPA. However Spring data JPA provides benefits when you develop you application using the spring framework. (Your application may not however be a Spring application and you will loose those benefits then; in that case you will have to create session objects etc... and connect to the database manually.)
+
+Spring data jpa provides many add ons which help make things easier.
+- Repository
+- ...
+
+Spring data jpa provides `Repository` which makes developing CRUD applications easier.
+
+- CrudRepository - makes CRUD operations easier.
+- PagingAndSortingRepository - adds methods to ease pagination
+
+__If you did not have Spring Data JPA you would have to :- __
+
+- Create session factory
+- Create session using that factory
+- start transaction
+- commit
+- close
+
+All the below stuff goes away when using repository from Spring Data JPA. Everything is handled in the background.
+
+[source,java,linenums]
+----
+/**
+ * Below code is just a sample and will not run.
+ */
+
+// Create factory
+protected void setUp() throws Exception {
+// A SessionFactory is set up once for an application!
+final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+        .configure() // configures settings from hibernate.cfg.xml
+        .build();
+    try {
+        sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
+    }
+    catch (Exception e) {
+        // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
+        // so destroy it manually.
+        StandardServiceRegistryBuilder.destroy( registry );
+    }
+}
+
+// Create session and persist
+Session session = sessionFactory.openSession();
+session.beginTransaction();
+session.save( new Event( "Our very first event!", new Date() ) );
+session.save( new Event( "A follow up event", new Date() ) );
+session.getTransaction().commit();
+session.close();
+----
+
+Or Use the JPA way of Entity Manager.
+
+[source,java]
+----
+EntityManager entityManager = sessionFactory.createEntityManager();
+entityManager.getTransaction().begin();
+entityManager.persist( new Event( "Our very first event!", new Date() ) );
+entityManager.persist( new Event( "A follow up event", new Date() ) );
+entityManager.getTransaction().commit();
+entityManager.close();
+----
+
+Having gone through 10000 ft overview lets get started with Spring Data JPA and not bother about using hibernate/JPA without Spring.
+
+== Meat
+
+Go through the code.
+
+=== DB Connections
+
+[source, properties]
+----
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2
+
+spring.datasource.url=jdbc:h2:file:~/fileDb;DB_CLOSE_DELAY=-1
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+spring.jpa.show-sql=true
+
+# Below lines will let Spring manage DDL creation.
+# If left out it will assume that the db schema is already there.
+spring.jpa.generate-ddl=true
+# if create instead of update will drop tables every time.
+spring.jpa.hibernate.ddl-auto = update
+----
+
+=== Entities
+
+- Entities can be embedded (Single table but multiple classes)
+- Entities can have 1-to-1 relationships.
+- Entities can have 1-to-many relationships.
+- Entities can have many-to-1 relationships. (Prefer this over 1 to many - guidance by JPA)
+- Entities can have many-to-many relationships. (Adds a new table in the db schema)
+
+=== Repositories
+- Use JPARepository if you need its methods else Page or CrudRepository.
+- Generate own methods (follow naming conventions) https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repository-query-keywords[here].
+- If creating methods name is not enough then you can create JPQL queries using `@Query` annotation.
+- You can also create native queries. (Native SQL DB specific query)
+- Create your own methods for modifying, inserting data etc... using `@Modifying` annotation.
+- `@Tranasctional` - This notation is usually used at the service layer. Say you wish to execute few methods in diff repositories to save a bunch of data in tables. The whole service method should be annotated as transactional so that every data is committed else rolled back. (Avoiding partial update of data i.e. for just 1 or 2 tables and rest do not get udpated.)
+
+
+=== Custom Entity Manager
+You can also create a custom implementation of entity manager if you need to. E.g. adding some intelligence on how data is saved and commited to the database etc... however these cases are rare.
+
+== Appendix
+
+=== A - Important JPA Annotations
+
+- `@Entity`
+- `@Table`
+- `@Id`
+- `@Column`
+- `@Embedded`
+- `@Embeddable`
+- ...
+
+---
+
+=== B - Testing
+
+- `@SpringBootTest` - Will persist data in the database which you have configured (e.g. file based h2).
+- `@DataJpaTest` - Flush data after running the test case.
+
+Check out the
+link:./src/test/java/com/rs/SB2/repository/StudentRepositoryTest.java[code].
+
+If you use

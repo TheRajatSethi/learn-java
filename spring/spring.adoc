@@ -1,0 +1,255 @@
+:toc: left
+
+= Spring Core Fundamentals
+
+== IoC & DI
+
+Inversion of control pretty much means that the programmer is not controlling the flow of the program its being done by some other party, the programmer is just defining the classes and creating methods but not calling all the method. Some framework or some other entity is calling the methods, instanciating the objects and so on. Thus, inversion of control flow of the program.
+
+
+Some examples include
+- When we create a servlet class we do not create a new instance of it its done by servlet container based on reqeust received from the web.
+- User generating some event(s) leading to some activity on the server etc...
+
+
+Dependency injection is one type of inverion of control where a framework such as spring will inject dependencies into the classes and wire them together
+
+Spring has concept of application context, where it adds all the dependencies as objects/beans and manages them i.e. instanciates them and destroys them and sends them to the classes who need them.
+
+_Example_
+
+Lets say we have a MessagePasser type of class EmailMessage which passes message. (There can be telephone message passer, letter message passer and so on)
+
+[,java,linenums]
+----
+public class EmailMessage implements MessagePasser{
+    @Override
+    public void passMessage(String message) {
+        System.out.println("Sending email of " + message);
+    }
+}
+----
+
+We will then create a application config class which will create a bean of type `EmailMessage`.
+
+[source,java]
+----
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public EmailMessage emailMessage(){
+        return new EmailMessage();
+    }
+}
+
+----
+
+The above bean can then be requested using the application context.
+
+[source,java]
+----
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class Runner {
+    public static void main(String[] args) {
+
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        MessagePasser messagePasser = context.getBean(EmailMessage.class);
+        messagePasser.passMessage("Good Morning!");
+
+    }
+}
+----
+
+__Using @Component__
+
+Defining a bean method in AppConfig class is one way, the other way is to annotate your class with @Component or @Service or ... And then annotate your appconfig class with @ComponentScan to look for beans in a list of packages. Spring will search those packages and look and create bean instances.
+
+[source,java]
+----
+package com.rs;
+
+@Component  // annotated my class with @Component to let Spring know that there is a bean here.
+public class TelephoneMessage implements MessagePasser{
+    @Override
+    public void passMessage(String message) {
+        System.out.println("Phone call with " + message);
+    }
+}
+----
+
+[source,java]
+----
+@Configuration
+@ComponentScan({"com.rs"}) // app config class will scan package com.rs for all beans.
+public class AppConfig {
+
+    @Bean
+    public EmailMessage emailMessage(){
+        return new EmailMessage();
+    }
+
+}
+----
+
+Get the bean object to work with as usual.
+
+[source,java]
+----
+ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+MessagePasser messagePasser1 = context.getBean(TelephoneMessage.class);
+messagePasser1.passMessage("Good Night!");
+----
+
+
+In the above we are using Annotation thus the AppConfig class is required but you can do the same via the xml file as well (very similar).
+You can either watch 'Tina Xing's video or read Spring Start Here (which goes into more depth of various options like bean naming, ordering etc...)
+
+== Bean Scopes
+
+
+__Singleton__
+By default its singleton - the container creates a single instance of that bean. Remember if you have 2 containers (which almost never is the case you will pretty much have one context but if it is the case then each container will have its own instance of the bean)
+
+__Prototype__
+A bean with the prototype scope will return a different instance every time it is requested from the container.
+
+[source,java]
+----
+@Bean
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE) // or
+@Scope("prototype")
+public EmailMessage emailMessage2(){}
+----
+
+There are other scopes as well such as below, you can read more about them https://www.baeldung.com/spring-bean-scopes[here] or in https://docs.spring.io/spring-framework/docs/3.0.0.M3/reference/html/ch04s04.html[spring-docs]
+- request
+- session
+- application
+- websocket
+
+
+== Stereotype based annotations
+
+There are other annotations as well such (in hierarchy)
+
+- `@Component` - most general like a bean
+- `@Controller` - Can add method annotations like `@GetMapping`, `@PostMapping` for get and post reqeusts.
+- `@RestController` - Used for REST services XML or JSON. Is a mix of `@Controller` and `@ResponseBody` annotation
+- `@Service` - Does not add extra functionality, but makes it clear that its for service layer.
+- `@Repository` - Used for persistance/DAO layer. Has some DB specific functionality which converts certain vendor specific (db2, mysql, sql server) exceptions to generic java excpetions which you can deal with.
+
+- The steriotype annotations do not require you to specify methods in the AppConfig which return the instance of the class. (`@Bean` does requrie you to have a method which return the instance of the class)
+- The steriotype annotations are applied on teh class where as the @Bean annotation is applied on the method which returns the instance of the class.
+- The steriotype bean name is the class name with first letter lower case (this is by default of course you can change the name if you wish) where as for @Bean the bean name is the name of the method which returns the instance of the class. (Again this is by default and possible to override.)
+
+
+== Bean Lifecycle
+
+There are various stages in a bean lifecycle (they are sort of hooks in the bean creation and bean destroy phase.)
+
+__Creation & Destroy hooks__
+There are various creation hooks where you can implement lifecycle callbacks, ContextAware interfaces etc... you can read more about them https://docs.spring.io/spring-framework/docs/current/reference/html/core.html=beans-factory-nature[here] or watch https://www.youtube.com/watch?v=pkKtmS5S07U&list=PLGTrAf5-F1YIUo_AWConTTY_VWGJnveT8&index=9[this] video however the recommended approach is to implement as post init method and pre destroy method.
+
+You can use `@PostConstruct` and `@PreDestroy` annotations. These are the recommended methods.
+
+[source,java]
+----
+@Component
+public class Person(){
+  public Person(){
+    System.out.println("Default Constructor triggered ... ");
+  }
+
+  @PostConstruct
+  public void customInit(){
+    System.out.println("Triggers after constructor ... ");
+  }
+
+  @PreDestroy
+  public void customDestroy(){
+    System.out.println("Triggers before bean is destroyed ... ");
+  }
+}
+----
+
+Note :- There are many many annotations you can find few of the important ones [here](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html=beans-annotation-config)
+
+== `@Qualifier`
+
+Lets say that you wish to `@Autowire` a bean of type `CustomerDao` but there are 2 beans of type `CustomerDao` you can use the `@Qualifier` annotation where the bean is supposed to be injected to specify the name of the bean to pick one of the two.
+
+'''
+
+== Spring MVC
+
+===  Front Controller
+
+In Spring MVC there is just a single servlet. Called the front controller or dispatcher servlet. This single dispatcher servlet contains a map of URL, type of request and Class, Method. Once the client sends the request it dispatches to your POJO.
+
+There are vaious benefits of doing this which you can learn [here](https://www.youtube.com/watch?v=7A8cUSvMRTA&list=PLGTrAf5-F1YIiJH5rpBcv3M6DSrbi08vI&index=2)
+
+=== Major components of Spring MVC
+
+- Dispatcher Servlet or Front Controller
+- Handler mapping
+- Controller
+- View Resolver
+- View
+
+
+First the request comes to dispatcher servlet (the only servlet in your app) -> The servlet will reqeust the map from handler mapping which will tell where this reqeust should be dispatched to i.e. which controller to call to. Then the dispatcher servlet will call the particular controller.
+
+Controller is a regualar java class which has many methods to do various tasks such as CRUD operations, logging etc...
+
+Controller will then return the model (info which you might need to render on the page) and the view name (like .jsp template file) to dispatcher servlet.
+
+Now the dispatcher servlet will ask the view resolver to give the location of the view i.e. .jsp file.
+
+View resolver will then return the location of the actual view. Then dispatcher servlet will pass the model to view then you will have the complete html page rendered with template and acual data i.e. string html page source (html string) which will be returned to the client.
+
+If you are not using spring boot then you will have to configure these yourself. (Not a lot but still some code or xml tags requried.) If you wish to learn how to configure this you can look at the same video series referred above.
+
+However as everyone is using spring boot now-a-days there is no need to learn to configure them from scratch unless there is need and then you can do a deep dive into them.
+
+=== 5.5.3. Mapping annotations
+
+- Request mapping : - This is general mapping annotation which can be used for get, post and others
+- Getmapping
+- Postmapping 
+- ...
+
+[source,java]
+----
+example here.
+----
+
+
+== Exception Handling
+
+- `@ControllerAdvice` handles global excpetions in Springboot. 
+	- You can extend `ResponseEntityExceptionHandler` class for some of the exceptions which it supports and override and return your own body.
+	- You can also add methods for you own exceptions in your custom class which is extending `ResponseEntityExceptionHandler` and annotated with `@ControllerAdvice` as shown below .
+	- `@RestControllerAdvice` - [@RestControllerAdvice](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/RestControllerAdvice.html) is the combination of both `@ControllerAdvice` and `@ResponseBody`:
+- `@ExceptionHandler` - It is an annotation used to handle the specific exceptions and sending the custom responses to the client. (Not global) - Usually you can handle exceptions in the controller level with this.
+
+[source,java]
+----
+@ControllerAdvice
+public class MyCustomerExceptionHandler extends ResponseEntityExceptionHandler{
+
+	public ResponseEntity<Object> handlesSomeCustomException(MyCustomException ex, WebRequest wr){
+		// method body
+	}
+
+}
+----
+
+== References
+- https://www.youtube.com/watch?v=jFZ4lLLkT7M[Youtube]

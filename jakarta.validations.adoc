@@ -1,0 +1,52 @@
+= Bean Validations
+
+== About
+
+[source,xml]
+----
+<dependency>
+<groupid>org.springframework.boot</groupid>
+<artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+----
+
+Standard framework - JSR 380 also known as Bean Validation 2.0 is the bean validation specification (not the implementation). The most used implementation of it is the Hibernate Validator.
+
+== Links
+- http://hibernate.org/validator[Hibernate Validator]
+
+
+== Important Annotations
+
+- `@NotNull`
+- `@Size`
+- `@Min`
+- `@Max`
+- `@Email`
+- `@NonEmpty`
+- `@NonBlank`
+
+== Examples
+
+__Using standard annotations__
+
+Suppose we wish to get income in the request. The income should not be negetive.
+
+[,java]
+----
+@Min(0L)
+@JsonProperty(value = "StatedIncome")
+private double statedIncome;
+----
+
+At the controller add the `@Valid` annotation to trigger the validations.
+
+[,java]
+----
+@PostMapping("/verify")
+public void verifyIncome(@Valid @RequestBody IncomeRequestBody incomeRequestBody){
+    System.out.println(incomeRequestBody);
+}
+----
+
+Thus, if the request comes in with less than 0, it will trigger exception specifically `org.springframework.web.bind.MethodArgumentNotValidException` exception which can be caught and specified with a custom error message.
