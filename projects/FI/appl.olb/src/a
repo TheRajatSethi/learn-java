@@ -1,0 +1,40 @@
+// User.java
+public record User(
+    Integer id,
+    String username,
+    String email,
+    String passwordHash,
+    java.sql.Timestamp createdAt
+) {}
+
+// Category.java
+public record Category(
+    Integer id,
+    String name,
+    String description
+) {}
+
+// Tag.java
+public record Tag(
+    Integer id,
+    String name
+) {}
+
+// Post.java
+public record Post(
+    Integer id,
+    Integer userId,
+    Integer categoryId,
+    String title,
+    String content,
+    java.sql.Timestamp createdAt,
+    java.sql.Timestamp updatedAt
+) {}
+
+
+public record PostTag(
+    Integer postId,
+    Integer tagId
+) {}
+
+

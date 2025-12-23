@@ -1,0 +1,12 @@
+    {% extends "templates/base.peb" %}
+
+    {% block content %}
+<div>
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
+        <legend class="fieldset-legend">Register Bank</legend>
+
+        <label class="label">Name</label>
+        <input type="text" class="input w-full" placeholder="Financial Institution Name"/>
+    </fieldset>
+</div>
+{% endblock %}

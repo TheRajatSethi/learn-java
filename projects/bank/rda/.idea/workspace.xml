@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="dc0127e9-84ff-4a3a-9059-b7ab9f212732" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../ServiceCustomerCore/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ServiceCustomerCore/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ServiceCustomerCore/src/main/db/ddl.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ServiceCustomerCore/src/main/java/rs/customer/service/coreCustomer/CoreCustomerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ServiceCustomerCore/src/main/java/rs/customer/service/coreCustomer/configuration/config.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ServiceCustomerCore/src/main/java/rs/customer/service/coreCustomer/service/CoreController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ServiceCustomerCore/src/main/java/rs/customer/service/coreCustomer/service/CoreService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ServiceCustomerCore/src/main/java/rs/customer/service/coreCustomer/service/do.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ServiceCustomerCore/src/main/java/rs/customer/service/coreCustomer/service/dto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ServiceCustomerCore/src/main/resources/application.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bigpicture.drawio.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../javalin-starter-parent/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../javalin-starter-parent/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/rs/customer/rda/AddressContext.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/rs/customer/rda/Application.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/rs/customer/rda/CustomerType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/rs/customer/rda/Gender.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/rs/customer/rda/Tenancy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../readme.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Readme (Case Conflict).md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../social-media-startup/architecture.drawio.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../../social-media-startup/architecture.drawio.svg" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "TheRajatSethi"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/TheRajatSethi/learn-java.git",
+    "accountId": "7091c9d7-39f3-4178-82ee-7531034f9e3b"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="30jauZ68ADx9dsrPXrcd0hTw0w8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.restore.workspace.module": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/sethi/Dropbox/learn-java/projects/customer/rda"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dc0127e9-84ff-4a3a-9059-b7ab9f212732" name="Changes" comment="" />
+      <created>1754143658700</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1754143658700</updated>
+    </task>
+    <servers />
+  </component>
+</project>

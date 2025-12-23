@@ -1,0 +1,31 @@
+= Customer Project
+
+== Overview
+
+The project is made to mimic what I do in cif, but is sort of a learning exercise. Thus take this as a learning exercise and do the same thing multiple ways e.g.
+
+- For inbound payload you can use hibernate validation or not use and do own validation.
+- Use Spring Modulith to structure code or don't use spring modulith and use own.
+- For events use Kafka, Rabbit MQ or use table and own queue
+- For api registration you can use Consul with service discovery or put NGNIX in front and not use service discovery etc...
+- Use Spring for some services, Use Javalin for some services
+- ...
+
+== Services
+
+* CoreCustomerService
+- SpringBoot based REST Service
+- Create Customer => Calls matching service to make sure duplicates are not created.
+- Get Customers Details
+
+* CustomerMatchingService
+- GRPC based service
+- Rule Engine ??
+
+
+== Tech Stack
+
+Some services are implemented using SpringBoot and some using Javalin so that can learn both ways of doing things.
+
+== Parent Pom vs Starter Project
+

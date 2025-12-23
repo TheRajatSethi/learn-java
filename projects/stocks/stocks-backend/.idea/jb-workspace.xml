@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WorkspaceSettings">
+    <project name="users" path="$PROJECT_DIR$/users" />
+    <project name="service-starter-parent" path="$PROJECT_DIR$/service-starter-parent" />
+    <project name="entities" path="$PROJECT_DIR$/models" />
+    <option name="workspace" value="true" />
+  </component>
+</project>

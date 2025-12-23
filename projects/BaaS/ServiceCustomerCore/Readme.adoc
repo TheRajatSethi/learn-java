@@ -1,0 +1,58 @@
+= Service Core Customer
+
+== Overview
+
+- Both the api's return very similar response structure. Easy for the consumer to parse.
+- Generate transaction Id
+- Connects to the Spring Config Server
+- Auth Server
+
+== End Points
+
+=== `POST /customers`
+
+Returns the following response
+
+[,json]
+----
+{
+    "status" : {
+        "id" : "xxxx",
+        "timestamp" : 234,
+        "status" :  200,
+        "reason" : -1,
+        "message" : ""
+    },
+    "createSubstatuses" : [
+        {
+            "contextField" : "",
+            "field" : "",
+            "value" : "",
+            "message" : ""
+        }
+    ],
+    "response" : {
+        "id" : 1
+    }
+}
+----
+
+=== `GET /customers/{id}`
+
+[,json]
+----
+{
+    "status" : {
+        "id" : "xxxx",
+        "timestamp" : 234,
+        "status" :  200,
+        "reason" : -1,
+        "message" : ""
+    },
+    "response" : {
+        "id" : 1,
+        "tenancy": "SI",
+        "..." : "..."
+    }
+}
+----

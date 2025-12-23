@@ -1,0 +1,61 @@
+= Customer Project
+
+== Overview
+
+The project is made to as a SaaS (BaaS) Bank As A Service. Trying to mimic what I do in CIF.
+
+- For inbound payload you can use hibernate validation or not use and do own validation.
+- Use Spring Modulith to structure code or don't use spring modulith and use own.
+- For events use Kafka, Rabbit MQ or use table and own queue
+- For api registration you can use Consul with service discovery or put NGNIX in front and not use service discovery etc...
+- Use Spring for some services, Use Javalin for some services
+- ...
+
+
+== Scope
+
+What are we building ?
+
+image:bigpicture.drawio.svg[]]
+
+== Dependencies Setup
+
+*Java*
+
+- Java 24/25
+
+*POSTGRES*
+
+[,sh]
+----
+docker pull postgres:alpine
+
+docker run -d --name customer-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres:alpine
+----
+
+----
+Connect to psql with some user `postgres`
+`psql -U postgres`
+
+Create a database with customer
+create database customer;
+
+Switch to customer database
+\c customer;
+
+Create Schema for the ServiceCustomerCore
+create schema servicecustomercore;
+
+
+----
+
+== Tech Stack
+
+- Java
+- SpringBoot
+- Javalikn
+
+Some services are implemented using SpringBoot and some using Javalin so that can learn both ways of doing things.
+
+== Parent Pom vs Starter Project
+

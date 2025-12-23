@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css"/>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div>
+    <div class="navbar bg-base-100 shadow-sm">
+        <div class="flex-1">
+            <a class="btn btn-ghost text-xl">BaaS Management Portal</a>
+        </div>
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                <div class="w-10 rounded-full">
+                    <img
+                            alt="Tailwind CSS Navbar component"
+                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"/>
+                </div>
+            </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                <li><a>Settings</a></li>
+                <li><a>Logout</a></li>
+            </ul>w
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="grid grid-cols-5 gap-4">
+        <div class="">
+            <ul class="flex flex-col gap-1">
+                <li class="bg-gray-100 p-2 font-medium text-center rounded-b-sm shaodow shadow-amber-100"><a href="/">Knowledge base</a></li>
+                <li class="bg-gray-100 p-2 font-medium text-center rounded-b-sm shaodow shadow-amber-100"><a href="/register">Registration</a></li>
+                <li class="bg-gray-100 p-2 font-medium text-center rounded-b-sm shaodow shadow-amber-100"><a href="/dashboard">Dashbaord</a></li>
+                <li class="bg-gray-100 p-2 font-medium text-center rounded-b-sm shaodow shadow-amber-100"><a href="/billing">Billing</a></li>
+            </ul>
+        </div>
+        <div class="col-span-4">
+                {% block content %}
+
+                {% endblock %}
+        </div>
+    </div>
+</div>
+</body>
+</html>

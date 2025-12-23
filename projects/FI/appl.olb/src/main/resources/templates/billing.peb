@@ -1,0 +1,7 @@
+    {% extends "templates/base.peb" %}
+
+    {% block content %}
+<div>
+    <h1>Billing</h1>
+</div>
+{% endblock %}

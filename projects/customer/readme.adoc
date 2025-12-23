@@ -1,0 +1,24 @@
+= Customer Project
+
+== Overview
+
+The project is made to mimic what I do in cif, but is sort of a learning exercise.
+
+== Services
+
+* CoreCustomerService
+- SpringBoot based REST Service
+- Create Customer => Calls matching service to make sure duplicates are not created.
+- Get Customers Details
+
+* CustomerMatchingService
+- GRPC based service
+- Rule Engine ??
+
+
+== Tech Stack
+
+Some services are implemented using SpringBoot and some using Javalin so that can learn both ways of doing things.
+
+== Parent Pom vs Starter Project
+

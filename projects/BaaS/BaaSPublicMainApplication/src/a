@@ -1,0 +1,82 @@
+-- Users table
+CREATE TABLE "User" (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Categories table
+CREATE TABLE Category (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT
+);
+
+-- Tags table
+CREATE TABLE Tag (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- Posts table
+CREATE TABLE Post (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+    category_id INTEGER REFERENCES Category(id) ON DELETE SET NULL,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Post-Tag many-to-many relationship
+CREATE TABLE PostTag (
+    post_id INTEGER REFERENCES Post(id) ON DELETE CASCADE,
+    tag_id INTEGER REFERENCES Tag(id) ON DELETE CASCADE,
+    PRIMARY KEY (post_id, tag_id)
+);
+
+
+
+// User.java
+public record User(
+    Integer id,
+    String username,
+    String email,
+    String passwordHash,
+    java.sql.Timestamp createdAt
+) {}
+
+// Category.java
+public record Category(
+    Integer id,
+    String name,
+    String description
+) {}
+
+// Tag.java
+public record Tag(
+    Integer id,
+    String name
+) {}
+
+// Post.java
+public record Post(
+    Integer id,
+    Integer userId,
+    Integer categoryId,
+    String title,
+    String content,
+    java.sql.Timestamp createdAt,
+    java.sql.Timestamp updatedAt
+) {}
+
+
+public record PostTag(
+    Integer postId,
+    Integer tagId
+) {}
+
+

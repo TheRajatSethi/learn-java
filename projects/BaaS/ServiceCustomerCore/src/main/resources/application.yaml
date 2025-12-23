@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: CoreCustomerService
+  datasource:
+    url: jdbc:postgresql://localhost:5432/customer?currentSchema=servicecustomercore
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: mysecretpassword
